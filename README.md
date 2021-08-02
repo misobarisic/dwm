@@ -70,7 +70,7 @@ By default `MOD` refers to the `SUPER` key.
 
 ## Author
 
-👤 **Mišo Barišić**
+**Mišo Barišić**
 
 * Website: https://www.misobarisic.com
 * GitHub: [@misobarisic](https://github.com/misobarisic)
