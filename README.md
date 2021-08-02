@@ -1,48 +1,76 @@
-dwm - dynamic window manager
-============================
-dwm is an extremely fast, small, and dynamic window manager for X.
+<h1 align="center">Welcome to dwm</h1>
+<p>
+  <a href="https://github.com/misobarisic/dwm/blob/master/LICENSE" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg" />
+  </a>
+</p>
+
+## About
+This is my personal lightly patched build of [dwm](https://dwm.suckless.org/).
+
+## Patches
+- autostart
+- bar-height
+- gaps
+- movestack
+- restartsig
+
+## Expected packages
+- alacritty
+- dmenu
+- firefox
+- ranger
+- nautilus
+
+These are the packages which need to be installed on your system for the default keybindings to function properly. All bindings can easily be changed by modifying `config.h`.
+
+## Keybindings
+
+By default `MOD` refers to the `SUPER` key.
+
+### Programs
+| Keybinding |  Action|
+|:-----|------:|
+| MOD + RETURN  | launch alacritty |
+| MOD + W  | launch firefox |
+| MOD + SHIFT + W  | launch firefox (private) |
+| MOD + F  | launch ranger |
+| MOD + SHIFT + F  | launch nautilus |
+
+### General keybindings
+| Keybinding |  Action|
+|:-----|------:|
+| MOD + Q | close window with focus |
+| MOD + SHIFT + Q  | kill dwm |
+| MOD + SHIFT + R  | restart dwm |
+| MOD + B | toggle status bar |
+| MOD + [1-9]  | go to tag [1-9]  |
+| MOD + SHIFT + [1-9]  | push window to tag [1-9] |
+| MOD + J  | change stack focus by +1 |
+| MOD + K  | change stack focus by -1 |
+| MOD + SHIFT + J  | move window up by one in stack |
+| MOD + SHIFT + K  | move window down by one in stack  |
+| MOD + H  | change master factor by -0.05 |
+| MOD + L  | change master factor by +0.05|
+
+### Layout keybindings
+| Keybinding |  Action|
+|:-----|------:|
+| MOD + C | tiling layout |
+| MOD + D | floating layout |
+| MOD + X | monocle (fullscreen) layout |
+| MOD + SPACE | toggle floating mode for window |
+
+### Mouse controls
+| Keybinding |  Action|
+|:-----|------:|
+| L_CLICK + DRAG | move window (floating mode)|
+| R_CLICK + DRAG | resize window (floating mode) |
 
 
-Requirements
-------------
-In order to build dwm you need the Xlib header files.
+## Author
 
+**Mišo Barišić**
 
-Installation
-------------
-Edit config.mk to match your local setup (dwm is installed into
-the /usr/local namespace by default).
-
-Afterwards enter the following command to build and install dwm (if
-necessary as root):
-
-    make clean install
-
-
-Running dwm
------------
-Add the following line to your .xinitrc to start dwm using startx:
-
-    exec dwm
-
-In order to connect dwm to a specific display, make sure that
-the DISPLAY environment variable is set correctly, e.g.:
-
-    DISPLAY=foo.bar:1 exec dwm
-
-(This will start dwm on display :1 of the host foo.bar.)
-
-In order to display status info in the bar, you can do something
-like this in your .xinitrc:
-
-    while xsetroot -name "`date` `uptime | sed 's/.*,//'`"
-    do
-    	sleep 1
-    done &
-    exec dwm
-
-
-Configuration
--------------
-The configuration of dwm is done by creating a custom config.h
-and (re)compiling the source code.
+* Website: https://www.misobarisic.com
+* GitHub: [@misobarisic](https://github.com/misobarisic)
