@@ -68,6 +68,7 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run","-m", dmenumon, "-fn", dmenufont, "-nb", col_bg_n, "-nf", col_fg_n, "-sb", col_bg_s, "-sf", col_fg_s, NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *browsercmd[]  = { "firefox", NULL };
+static const char *browserpcmd[]  = { "firefox","--private-window", NULL };
 static const char *filecmd[]  = { "nautilus", NULL };
 static const char *rangercmd[]  = { "alacritty", "-e", "ranger", NULL };
 
@@ -76,6 +77,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_w,      spawn,          {.v = browsercmd } },
+	{ MODKEY|ShiftMask,             XK_w,      spawn,          {.v = browserpcmd } },
 	{ MODKEY,                       XK_f,      spawn,          {.v = rangercmd } },
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = filecmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
