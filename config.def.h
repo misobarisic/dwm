@@ -37,6 +37,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "Brave",  NULL,       NULL,       1 << 8,       0,           -1 },
 };
 
 /* layout(s) */
@@ -81,6 +82,9 @@ static Key keys[] = {
 	{ MODKEY,                       XK_f,      spawn,          {.v = rangercmd } },
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = filecmd } },
 
+	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} }, /* kill dwm */
+	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, /* restart dwm */
+
 	{ MODKEY,                       XK_q,      killclient,     {0} }, // Close window
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 
@@ -115,9 +119,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} }, /* kill dwm */
-	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, /* restart dwm */
-};
+	};
 
 /* button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle, ClkClientWin, or ClkRootWin */
