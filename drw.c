@@ -248,6 +248,30 @@ drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int
 		XDrawRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w - 1, h - 1);
 }
 
+drw_arrow(Drw *drw, int x, int y, unsigned int w, unsigned int h, int direction, int slash)
+{
+        if (!drw)
+                return;
+
+        /* direction=1 draws right arrow */
+        x = direction ? x : x + w;
+        w = direction ? w : -w;
+        /* slash=1 draws slash instead of arrow */
+        unsigned int hh = slash ? (direction ? 0 : h) : h/2;
+
+        XPoint points[] = {
+                {x    , y      },
+                {x + w, y + hh },
+                {x    , y + h  },
+        };
+
+        XSetForeground(drw->dpy, drw->gc, drw->scheme[ColBg].pixel);
+        XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w, h);
+        XSetForeground(drw->dpy, drw->gc, drw->scheme[ColFg].pixel);
+        XFillPolygon(drw->dpy, drw->drawable, drw->gc, points, 3, Nonconvex, CoordModeOrigin);
+}
+
+
 int
 drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert)
 {

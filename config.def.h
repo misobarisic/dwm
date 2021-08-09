@@ -20,13 +20,16 @@ static const char *colors[][3]      = {
 	/*               fg        bg        border   */
 	[SchemeNorm] = { col_fg_n, col_bg_n, col_wb_n },
 	[SchemeSel]  = { col_fg_s, col_bg_s, col_wb_s },
+	[ArrowNorm]  = { col_bg_s, col_bg_n, col_wb_s },
+	[ArrowSel] 	 = { col_bg_n, col_bg_s, col_wb_s },
+	[ArrowBg] 	 = { col_bg_n, col_bg_n, col_wb_s },
 };
 
 /* bar height */
 static const int user_bh = 24; /* 0 means that dwm will calculate bar height */
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7"};
 /*static const char *tags[] = { "", "", "", "", "", "", "" };
 */
 static const Rule rules[] = {
@@ -35,9 +38,8 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
-	{ "Brave",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "--firefox", NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "--Brave-browser",  NULL,       NULL,       1 << 8,       0,           -1 },
 };
 
 /* layout(s) */
@@ -48,8 +50,8 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]",      tile },    /* first entry is default */
-	{ "<>",      NULL },    /* no layout function means floating behavior */
+	{ "[T]",      tile },    /* first entry is default */
+	{ "[F]",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
 };
 
