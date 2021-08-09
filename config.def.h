@@ -3,6 +3,7 @@
 #include "movestack.c"
 
 /* appearance */
+static const unsigned int arrowpx   = 12;       /* arrow size in px */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int gappx     = 4;        /* gap pixel between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -16,20 +17,27 @@ static const char col_fg_n[]        = "#d2d2d2";
 static const char col_fg_s[]        = "#eeeeee";
 static const char col_wb_s[] 	    = "#536dfe"; /* indigo a200 */
 static const char col_wb_n[]	    = "#444444";
+static const char col_active[]	    = "#d81b60"; /* pink 600 */
 static const char *colors[][3]      = {
 	/*               fg        bg        border   */
-	[SchemeNorm] = { col_fg_n, col_bg_n, col_wb_n },
-	[SchemeSel]  = { col_fg_s, col_bg_s, col_wb_s },
-	[ArrowNorm]  = { col_bg_s, col_bg_n, col_wb_s },
-	[ArrowSel] 	 = { col_bg_n, col_bg_s, col_wb_s },
-	[ArrowBg] 	 = { col_bg_n, col_bg_n, col_wb_s },
+	[SchemeNorm] 	= { col_fg_n, col_bg_n, col_wb_n },
+	[SchemeSel]  	= { col_fg_s, col_bg_s, col_wb_s },
+	[SchemeActive]	= { col_fg_n, col_active, col_wb_s },
+	[ArrowNorm]	    = { col_bg_s, col_bg_n, col_wb_s },
+	[ArrowNormAlt]	    = { col_bg_s, col_active, col_wb_s },
+	[ArrowSel] 	    = { col_bg_n, col_bg_s, col_wb_s },
+	[ArrowSelAlt] 	= { col_active, col_bg_s, col_wb_s },
+	[ArrowBg] 	    = { col_bg_n, col_bg_n, col_wb_s },
+	[ArrowActive]   = { col_active, col_bg_n, col_wb_s },
+	[ArrowActiveAlt]= { col_bg_n, col_active, col_wb_s },
+	[ArrowFullActive]= { col_active, col_active, col_wb_s },
 };
 
 /* bar height */
 static const int user_bh = 24; /* 0 means that dwm will calculate bar height */
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7"};
+static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9"};
 /*static const char *tags[] = { "", "", "", "", "", "", "" };
 */
 static const Rule rules[] = {

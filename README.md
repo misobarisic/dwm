@@ -14,6 +14,7 @@ This is my personal lightly patched build of [dwm](https://dwm.suckless.org/).
 - gaps
 - movestack
 - restartsig
+- custom powerline tags
 
 ## Expected packages
 - alacritty
