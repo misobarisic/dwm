@@ -120,6 +120,7 @@ struct Monitor {
 	int by;               /* bar geometry */
 	int mx, my, mw, mh;   /* screen size */
 	int wx, wy, ww, wh;   /* window area  */
+	int gappx;   		  /* gap in pixels between windows  */
 	unsigned int seltags;
 	unsigned int sellt;
 	unsigned int tagset[2];
@@ -182,6 +183,7 @@ static void killclient(const Arg *arg);
 static void manage(Window w, XWindowAttributes *wa);
 static void mappingnotify(XEvent *e);
 static void maprequest(XEvent *e);
+static void modifygaps(const Arg *arg);
 static void monocle(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
@@ -202,6 +204,7 @@ static void sendmon(Client *c, Monitor *m);
 static void setclientstate(Client *c, long state);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
+static void setgaps(const Arg *arg);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setup(void);
@@ -644,6 +647,7 @@ createmon(void)
 	m->nmaster = nmaster;
 	m->showbar = showbar;
 	m->topbar = topbar;
+	m->gappx = gappx;
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
@@ -728,9 +732,9 @@ drawbar(Monitor *m)
 		int count = 0;
     	while (token != NULL) {
 			if (count % 2 == 0) {
-				tw += arrowpx+TEXTW(token) - lrpad;
+				tw += s_arrowpx+TEXTW(token) - lrpad;
 			} else {
-				tw += arrowpx+TEXTW(token) - lrpad;
+				tw += s_arrowpx+TEXTW(token) - lrpad;
 			}
 		
         	token = strtok(0, s);
@@ -740,30 +744,30 @@ drawbar(Monitor *m)
 		sx = m->ww - tw;
 
 		strcpy(statusText,stext);
-		char* token_two = strtok(statusText, s);
+		token = strtok(statusText, s);
 		count = 0;
-		while (token_two != NULL) {
+		while (token != NULL) {
 			if (count % 2 != 0) {
 				drw_setscheme(drw, scheme[ArrowNorm]);
-				drw_arrow(drw, sx, 0, arrowpx, bh, 0, 0);
-				sx += arrowpx;
+				drw_arrow(drw, sx, 0, s_arrowpx, bh, 0, 0);
+				sx += s_arrowpx;
 
 				drw_setscheme(drw, scheme[ArrowSelWhite]);
-				tmp = TEXTW(token_two) - lrpad;
-				drw_text(drw, sx, 0, tw, bh, 0, token_two, 0);
+				tmp = TEXTW(token) - lrpad;
+				drw_text(drw, sx, 0, tw, bh, 0, token, 0);
 				sx += tmp;
 			} else {
 				drw_setscheme(drw, scheme[m->sel->name != NULL && count == 0 ? ArrowNorm : ArrowBg]);
-				drw_arrow(drw, sx, 0, arrowpx, bh, count == 0 ? 1 : 0, 0);
-				sx += arrowpx;
+				drw_arrow(drw, sx, 0, s_arrowpx, bh, count == 0 ? 1 : 0, 0);
+				sx += s_arrowpx;
 
 				drw_setscheme(drw, scheme[SchemeStatus]);
-				tmp = TEXTW(token_two) - lrpad;
-				drw_text(drw, sx, 0, tw, bh, 0, token_two, 0);
+				tmp = TEXTW(token) - lrpad;
+				drw_text(drw, sx, 0, tw, bh, 0, token, 0);
 				sx += tmp;
 			}
 
-        	token_two = strtok(0, s);
+        	token = strtok(0, s);
 			count++;
 		}
 
@@ -1191,6 +1195,15 @@ maprequest(XEvent *e)
 }
 
 void
+modifygaps(const Arg *arg) {
+	if ((arg->i == 0) || (selmon->gappx + arg->i < 0))
+		selmon->gappx = 0;
+	else
+		selmon->gappx += arg->i;
+	arrange(selmon);
+}
+
+void
 monocle(Monitor *m)
 {
 	unsigned int n = 0;
@@ -1595,6 +1608,15 @@ setfullscreen(Client *c, int fullscreen)
 }
 
 void
+setgaps(const Arg *arg) {
+	if (arg->i == 0)
+		selmon->gappx = gappx;
+	else
+		selmon->gappx = arg->i;
+	arrange(selmon);
+}
+
+void
 setlayout(const Arg *arg)
 {
 	if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
@@ -1795,22 +1817,22 @@ tile(Monitor *m)
 		return;
 
 	if (n > m->nmaster)
-		mw = m->nmaster ? (m->ww - (g = gappx)) * m->mfact : 0;
+		mw = m->nmaster ? (m->ww - (g = m->gappx)) * m->mfact : 0;
 	else
 		mw = m->ww;
 	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
 		if (i < m->nmaster) {
       r = MIN(n, m->nmaster) - i;
-      h = (m->wh - my - gappx * (r - 1)) / r;
+      h = (m->wh - my - m->gappx * (r - 1)) / r;
 			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
 			if (my + HEIGHT(c) < m->wh)
-				my += HEIGHT(c) + gappx;
+				my += HEIGHT(c) + m->gappx;
 		} else {
       r = n - i;
-      h = (m->wh - ty - gappx * (r - 1)) / r;
+      h = (m->wh - ty - m->gappx * (r - 1)) / r;
       resize(c, m->wx + mw + g, m->wy + ty, m->ww - mw - g - (2*c->bw), h - (2*c->bw), False);
 			if (ty + HEIGHT(c) < m->wh)
-				ty += HEIGHT(c) + gappx;
+				ty += HEIGHT(c) + m->gappx;
 		}
 }
 

@@ -14,7 +14,7 @@ This is my personal lightly patched build of [dwm](https://dwm.suckless.org/).
 - gaps
 - movestack
 - restartsig
-- custom powerline tags
+- custom status bar patches (no .diff files)
 
 ## Expected packages
 - alacritty
@@ -61,6 +61,9 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + D | floating layout |
 | MOD + X | monocle (fullscreen) layout |
 | MOD + SPACE | toggle floating mode for window |
+| MOD + CONTROL + J | increase gap between windows |
+| MOD + CONTROL + K | decrease gap between windows |
+| MOD + CONTROL + N | reset gap between windows |
 
 ### Mouse controls
 | Keybinding |  Action|
