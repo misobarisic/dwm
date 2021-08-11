@@ -89,3 +89,4 @@ By default `MOD` refers to the `SUPER` key.
 
 * Website: https://www.misobarisic.com
 * GitHub: [@misobarisic](https://github.com/misobarisic)
+* GitLab: [@misobarisic](https://gitlab.com/misobarisic)
