@@ -63,11 +63,17 @@ static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
+#include "barpos.c"
+#include "fibonacci.c"
+#include "gaps.c"
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[T]",      tile },    /* first entry is default */
 	{ "[F]",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
+	{ "[@]",      spiral },
+ 	{ "[\\]",     dwindle },
+	{ NULL, NULL}
 };
 
 /* key definitions */
@@ -103,14 +109,18 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, /* restart dwm */
 
 	{ MODKEY,                       XK_q,      killclient,     {0} }, // Close window
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ MODKEY,                       XK_b,      togglebar,      {0} }, // Switch bar on/off
+	{ MODKEY|ShiftMask,             XK_b,      changebarpos,   {0} }, // Move between up and down
 
-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
+	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } }, 
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1} },
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1} },
 	
-	{ MODKEY|ControlMask,   		XK_j,      modifygaps,     {.i = +12} },
+	{ MODKEY,					    XK_n,      cyclelayout,    {.i = +1 } },
+	{ MODKEY,         			    XK_m,      cyclelayout,    {.i = -1 } },
+	
+	{ MODKEY|ControlMask,   	    XK_j,      modifygaps,     {.i = +12} },
 	{ MODKEY|ControlMask,           XK_k,      modifygaps,     {.i = -12} },
 	{ MODKEY|ControlMask,           XK_n,      setgaps,        {.i = 2} },
 

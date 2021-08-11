@@ -11,10 +11,18 @@ This is my personal lightly patched build of [dwm](https://dwm.suckless.org/).
 ## Patches
 - autostart
 - bar-height
+- fibonacci layout
 - gaps
 - movestack
 - restartsig
-- custom status bar patches (no .diff files)
+- custom patches (no .diff files)
+
+## Custom patch functions
+- changebarpos
+- drawbar
+- modifygaps
+- setgaps
+
 
 ## Expected packages
 - alacritty
@@ -45,6 +53,7 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + SHIFT + Q  | kill dwm |
 | MOD + SHIFT + R  | restart dwm |
 | MOD + B | toggle status bar |
+| MOD + SHIFT + B | change status bar position |
 | MOD + [1-9]  | go to tag [1-9]  |
 | MOD + SHIFT + [1-9]  | push window to tag [1-9] |
 | MOD + J  | change stack focus by +1 |
@@ -61,6 +70,8 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + D | floating layout |
 | MOD + X | monocle (fullscreen) layout |
 | MOD + SPACE | toggle floating mode for window |
+| MOD + N | cycle layout +1 |
+| MOD + M | cycle layout -1 |
 | MOD + CONTROL + J | increase gap between windows |
 | MOD + CONTROL + K | decrease gap between windows |
 | MOD + CONTROL + N | reset gap between windows |
