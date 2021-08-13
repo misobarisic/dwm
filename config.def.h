@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 #include "movestack.c"
+#include <X11/X.h>
 
 /* appearance */
 static const unsigned int arrowpx   = 12;       /* arrow size in px */
@@ -66,6 +67,7 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 #include "barpos.c"
 #include "fibonacci.c"
 #include "gaps.c"
+#include "volume.c"
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[T]",      tile },    /* first entry is default */
@@ -111,6 +113,11 @@ static Key keys[] = {
 	{ MODKEY,                       XK_q,      killclient,     {0} }, // Close window
 	{ MODKEY,                       XK_b,      togglebar,      {0} }, // Switch bar on/off
 	{ MODKEY|ShiftMask,             XK_b,      changebarpos,   {0} }, // Move between up and down
+
+	// Volume controls
+	{ MODKEY|ShiftMask,             XK_i,      increaseVolume, {0} },
+	{ MODKEY|ShiftMask,             XK_u,      decreaseVolume, {0} },
+	{ MODKEY|ShiftMask,             XK_m,      muteVolume,     {0} },
 
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } }, 
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
