@@ -10,7 +10,7 @@ static const unsigned int gappx     = 4;        /* gap pixel between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "size=10", "FontAwesome:size=10" };
+static const char *fonts[]          = { "size=10", "FontAwesome:size=11" };
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_bg_n[]        = "#1F2937"; /* tailwind gray 800 */
 static const char col_bg_s[]        = "#3f51b5"; /* indigo 500 */
