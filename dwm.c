@@ -163,6 +163,7 @@ struct Monitor {
   int mx, my, mw, mh; /* screen size */
   int wx, wy, ww, wh; /* window area  */
   int gappx;          /* gap in pixels between windows  */
+  int sidegappx;      /* gap pixel between layout and sides */
   unsigned int seltags;
   unsigned int sellt;
   unsigned int tagset[2];
@@ -473,7 +474,7 @@ void buttonpress(XEvent *e) {
   if (ev->window == selmon->barwin) {
     i = x = 0;
     do
-      x += TEXTW(tags[i])+arrowpx;
+      x += TEXTW(tags[i]) + arrowpx;
     while (ev->x >= x && ++i < LENGTH(tags));
     if (i < LENGTH(tags)) {
       click = ClkTagBar;
@@ -669,6 +670,7 @@ Monitor *createmon(void) {
   m->showbar = showbar;
   m->topbar = topbar;
   m->gappx = gappx;
+  m->sidegappx = sidegappx;
   m->lt[0] = &layouts[0];
   m->lt[1] = &layouts[1 % LENGTH(layouts)];
   strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
@@ -1333,8 +1335,10 @@ void propertynotify(XEvent *e) {
 }
 
 void quit(const Arg *arg) {
-  if (arg->i)
+  if (arg->i) {
+    system("killall dwmblocks");
     restart = 1;
+  }
   running = 0;
 }
 
@@ -1756,23 +1760,29 @@ void tile(Monitor *m) {
   if (n == 0)
     return;
 
-  if (n > m->nmaster)
+  if (n > m->nmaster) {
     mw = m->nmaster ? (m->ww - (g = m->gappx)) * m->mfact : 0;
-  else
+  } else {
     mw = m->ww;
-  for (i = my = ty = 0, c = nexttiled(m->clients); c;
+  }
+
+  for (i = 0, my = ty = m->sidegappx * 2, c = nexttiled(m->clients); c;
        c = nexttiled(c->next), i++)
     if (i < m->nmaster) {
       r = MIN(n, m->nmaster) - i;
-      h = (m->wh - my - m->gappx * (r - 1)) / r;
-      resize(c, m->wx, m->wy + my, mw - (2 * c->bw), h - (2 * c->bw), 0);
+      h = ((m->wh - my - m->gappx * (r - 1)) / r);
+      resize(c, m->wx + m->sidegappx, m->wy + my - m->sidegappx,
+             mw - (2 * c->bw) - m->sidegappx - 
+             (nexttiled(c->next) != NULL ? 0 : m->sidegappx), // Check if there's only 1 window present. If true, add right padding
+             h - (2 * c->bw), 0);
       if (my + HEIGHT(c) < m->wh)
         my += HEIGHT(c) + m->gappx;
     } else {
       r = n - i;
       h = (m->wh - ty - m->gappx * (r - 1)) / r;
-      resize(c, m->wx + mw + g, m->wy + ty, m->ww - mw - g - (2 * c->bw),
-             h - (2 * c->bw), False);
+      resize(c, m->wx + mw + g, m->wy + ty - m->sidegappx,
+             m->ww - mw - g - (2 * c->bw) - m->sidegappx, h - (2 * c->bw),
+             False);
       if (ty + HEIGHT(c) < m->wh)
         ty += HEIGHT(c) + m->gappx;
     }

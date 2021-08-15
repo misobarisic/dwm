@@ -22,6 +22,7 @@ This is my personal lightly patched build of [dwm](https://dwm.suckless.org/).
 - drawbar
 - modifygaps
 - setgaps
+- volume manipulation
 
 
 ## Expected packages
@@ -29,7 +30,7 @@ This is my personal lightly patched build of [dwm](https://dwm.suckless.org/).
 - dmenu
 - firefox
 - ranger
-- nautilus
+- nemo
 
 These are the packages which need to be installed on your system for the default keybindings to function properly. All bindings can easily be changed by modifying `config.h`.
 
@@ -44,7 +45,7 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + W  | launch firefox |
 | MOD + SHIFT + W  | launch firefox (private) |
 | MOD + F  | launch ranger |
-| MOD + SHIFT + F  | launch nautilus |
+| MOD + SHIFT + F  | launch nemo |
 
 ### General keybindings
 | Keybinding |  Action|
@@ -63,6 +64,13 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + H  | change master factor by -0.05 |
 | MOD + L  | change master factor by +0.05|
 
+### Volume keybindings
+| Keybinding |  Action|
+|:-----|------:|
+| MOD + SHIFT + M | toggle sound on/off |
+| MOD + SHIFT + I  | increase volume by 5% |
+| MOD + SHIFT + U  | decrease volume by 5% |
+
 ### Layout keybindings
 | Keybinding |  Action|
 |:-----|------:|
@@ -75,6 +83,9 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + CONTROL + J | increase gap between windows |
 | MOD + CONTROL + K | decrease gap between windows |
 | MOD + CONTROL + N | reset gap between windows |
+| MOD + CONTROL + U | increase gap between layout and sides |
+| MOD + CONTROL + I | decrease gap between layout and sides |
+| MOD + CONTROL + M | reset gap between layout and sides |
 
 ### Mouse controls
 | Keybinding |  Action|

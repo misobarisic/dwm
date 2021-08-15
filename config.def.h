@@ -7,7 +7,8 @@
 static const unsigned int arrowpx   = 12;       /* arrow size in px */
 static const unsigned int s_arrowpx = 12;       /* arrow size in px */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
-static const unsigned int gappx     = 4;        /* gap pixel between windows */
+static const unsigned int gappx     = 2;        /* gap pixel between windows */
+static const unsigned int sidegappx = 8;       /* gap pixel between layout and sides */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
@@ -95,7 +96,7 @@ static const char *dmenucmd[] = { "dmenu_run","-m", dmenumon, "-fn", dmenufont, 
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *browsercmd[]  = { "firefox", NULL };
 static const char *browserpcmd[]  = { "firefox","--private-window", NULL };
-static const char *filecmd[]  = { "nautilus", NULL };
+static const char *filecmd[]  = { "nemo", NULL };
 static const char *rangercmd[]  = { "alacritty", "-e", "ranger", NULL };
 
 static Key keys[] = {
@@ -127,9 +128,15 @@ static Key keys[] = {
 	{ MODKEY,					    XK_n,      cyclelayout,    {.i = +1 } },
 	{ MODKEY,         			    XK_m,      cyclelayout,    {.i = -1 } },
 	
+    // Inner gaps
 	{ MODKEY|ControlMask,   	    XK_j,      modifygaps,     {.i = +12} },
 	{ MODKEY|ControlMask,           XK_k,      modifygaps,     {.i = -12} },
-	{ MODKEY|ControlMask,           XK_n,      setgaps,        {.i = 2} },
+	{ MODKEY|ControlMask,           XK_n,      setgaps,        {.i = gappx} },
+
+    // Outer gaps
+	{ MODKEY|ControlMask,   	    XK_u,      modifysidegaps, {.i = +12} },
+	{ MODKEY|ControlMask,           XK_i,      modifysidegaps, {.i = -12} },
+	{ MODKEY|ControlMask,           XK_m,      setsidegaps,    {.i = sidegappx} },
 
 	{ MODKEY,                       XK_u,      incnmaster,     {.i = +1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = -1 } },
