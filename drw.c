@@ -248,6 +248,7 @@ drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int
 		XDrawRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w - 1, h - 1);
 }
 
+void
 drw_arrow(Drw *drw, int x, int y, unsigned int w, unsigned int h, int direction, int slash)
 {
         if (!drw)

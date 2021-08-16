@@ -1,5 +1,4 @@
-void
-changebarpos(const Arg *arg)
+void changebarpos(const Arg *arg)
 {
 	selmon->topbar = !selmon->topbar;
 	updatebarpos(selmon);

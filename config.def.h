@@ -1,6 +1,5 @@
 /* See LICENSE file for copyright and license details. */
 
-#include "movestack.c"
 #include <X11/X.h>
 
 /* appearance */
@@ -57,6 +56,7 @@ static const Rule rules[] = {
 	{ "--firefox", NULL,       NULL,       1 << 8,       0,           -1 },
 	{ "--Brave-browser",  NULL,       NULL,       1 << 8,       0,           -1 },
 	{ "Yad",  NULL,       NULL,       0,       1,           -1 },
+	{ "discord",  NULL,       NULL,       0,       1,           -1 },
 };
 
 /* layout(s) */
@@ -68,7 +68,10 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 #include "barpos.c"
 #include "fibonacci.c"
 #include "gaps.c"
+#include "movestack.c"
+#include "tags.c"
 #include "volume.c"
+
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[T]",      tile },    /* first entry is default */
@@ -82,11 +85,12 @@ static const Layout layouts[] = {
 /* key definitions */
 #define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
-	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
-
+	{ MODKEY,                       KEY,      view,           {.ui = TAG} }, \
+	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = TAG} }, \
+	{ MODKEY|ControlMask,           KEY,      viewtag,        {.ui = TAG} }, \
+	/*{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
+	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} }, */
+	
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
@@ -120,11 +124,20 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_u,      decreaseVolume, {0} },
 	{ MODKEY|ShiftMask,             XK_m,      muteVolume,     {0} },
 
+	// Stack controls
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } }, 
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1} },
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1} },
-	
+
+	// Relative controls
+	{ MODKEY,                       XK_s,      relativeview,   {.i = +1} },
+	{ MODKEY,                       XK_a,      relativeview,   {.i = -1} },
+	{ MODKEY|ShiftMask,             XK_s,      relativemoveview,   {.i = +1} },
+	{ MODKEY|ShiftMask,             XK_a,      relativemoveview,   {.i = -1} },
+	{ MODKEY|ShiftMask,             XK_x,      relativemove,   {.i = +1} },
+	{ MODKEY|ShiftMask,             XK_y,      relativemove,   {.i = -1} },
+
 	{ MODKEY,					    XK_n,      cyclelayout,    {.i = +1 } },
 	{ MODKEY,         			    XK_m,      cyclelayout,    {.i = -1 } },
 	
@@ -163,7 +176,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_6,                      5)
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
-	TAGKEYS(                        XK_9,                      8)
+	//TAGKEYS(                        XK_9,                      8)
 	};
 
 /* button definitions */

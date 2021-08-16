@@ -169,6 +169,7 @@ struct Monitor {
   unsigned int tagset[2];
   int showbar;
   int topbar;
+  int selectedtag; /* keep track of selected tag */
   Client *clients;
   Client *sel;
   Client *stack;
@@ -671,6 +672,7 @@ Monitor *createmon(void) {
   m->topbar = topbar;
   m->gappx = gappx;
   m->sidegappx = sidegappx;
+  m->selectedtag = 1;
   m->lt[0] = &layouts[0];
   m->lt[1] = &layouts[1 % LENGTH(layouts)];
   strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
@@ -1738,8 +1740,9 @@ void spawn(const Arg *arg) {
 }
 
 void tag(const Arg *arg) {
-  if (selmon->sel && arg->ui & TAGMASK) {
-    selmon->sel->tags = arg->ui & TAGMASK;
+  int endtag = 1 << arg->ui;
+  if (selmon->sel && endtag & TAGMASK) {
+    selmon->sel->tags = endtag & TAGMASK;
     focus(NULL);
     arrange(selmon);
   }
@@ -2092,11 +2095,13 @@ void updatewmhints(Client *c) {
 }
 
 void view(const Arg *arg) {
-  if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
+  int endtag = 1 << arg->ui;
+  if ((endtag & TAGMASK) == selmon->tagset[selmon->seltags])
     return;
   selmon->seltags ^= 1; /* toggle sel tagset */
-  if (arg->ui & TAGMASK)
-    selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+  if (endtag & TAGMASK)
+    selmon->tagset[selmon->seltags] = endtag & TAGMASK;
+  selmon->selectedtag = arg->ui;
   focus(NULL);
   arrange(selmon);
 }

@@ -6,7 +6,7 @@
 </p>
 
 ## About
-This is my personal lightly patched build of [dwm](https://dwm.suckless.org/).
+This is my personal build of [dwm](https://dwm.suckless.org/).
 
 ## Patches
 - autostart
@@ -17,13 +17,12 @@ This is my personal lightly patched build of [dwm](https://dwm.suckless.org/).
 - restartsig
 - custom patches (no .diff files)
 
-## Custom patch functions
-- changebarpos
-- drawbar
-- modifygaps
-- setgaps
-- volume manipulation
-
+## Custom patches
+- modified drawbar and tile functions
+- barpos.c
+- gaps.c
+- tags.c
+- volume.c
 
 ## Expected packages
 - alacritty
@@ -70,6 +69,19 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + SHIFT + M | toggle sound on/off |
 | MOD + SHIFT + I  | increase volume by 5% |
 | MOD + SHIFT + U  | decrease volume by 5% |
+
+### Tag keybindings
+| Keybinding |  Action|
+|:-----|------:|
+| MOD + [1-9]  | go to tag [1-9]  |
+| MOD + SHIFT + [1-9]  | push window to tag [1-9] |
+| MOD + CONTROL + [1-9]  | combination of the previous two |
+| MOD + S  | go to next tag |
+| MOD + A | go to previous tag |
+| MOD + SHIFT + S  | move window to next tag and go there |
+| MOD + SHIFT + A | move window to previous tag and go there |
+| MOD + SHIFT + X  | move window to next tag |
+| MOD + SHIFT + Y | move window to previous tag |
 
 ### Layout keybindings
 | Keybinding |  Action|
