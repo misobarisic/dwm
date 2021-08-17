@@ -431,7 +431,6 @@ int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact) {
 }
 
 void arrange(Monitor *m) {
-  roundcorners(m->stack);
   if (m)
     showhide(m->stack);
   else
@@ -1378,6 +1377,29 @@ void resizeclient(Client *c, int x, int y, int w, int h) {
   c->oldh = c->h;
   c->h = wc.height = h;
   wc.border_width = c->bw;
+
+  // Remove border
+  /*
+  if ((((nexttiled(c->mon->clients) == c && !nexttiled(c->next))
+	    || &monocle == c->mon->lt[c->mon->sellt]->arrange)
+	    && !c->isfullscreen && !c->isfloating) || c->mon->cornerrad > 0) {
+		c->w = wc.width += c->bw * 2;
+		c->h = wc.height += c->bw * 2;
+		wc.border_width = 0;
+	}
+  */
+
+  if (c->mon->cornerrad > 0) {
+    //c->w = wc.width += c->bw;
+		//c->h = wc.height += c->bw;
+		wc.border_width = 0;
+  } else {
+    //c->w = wc.width -= c->bw;
+		//c->h = wc.height -= c->bw;
+		wc.border_width = c->bw;
+  }
+  
+
   XConfigureWindow(dpy, c->win, CWX | CWY | CWWidth | CWHeight | CWBorderWidth,
                    &wc);
   configure(c);
@@ -1784,8 +1806,11 @@ void tile(Monitor *m) {
       r = MIN(n, m->nmaster) - i;
       h = ((m->wh - my - m->gappx * (r - 1)) / r);
       resize(c, m->wx + m->sidegappx, m->wy + my - m->sidegappx,
-             mw - (2 * c->bw) - m->sidegappx - 
-             (nexttiled(c->next) != NULL ? 0 : m->sidegappx), // Check if there's only 1 window present. If true, add right padding
+             mw - (2 * c->bw) - m->sidegappx -
+                 (nexttiled(c->next) != NULL
+                      ? 0
+                      : m->sidegappx), // Check if there's only 1 window
+                                       // present. If true, add right padding
              h - (2 * c->bw), 0);
       if (my + HEIGHT(c) < m->wh)
         my += HEIGHT(c) + m->gappx;

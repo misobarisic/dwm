@@ -87,6 +87,7 @@ By default `MOD` refers to the `SUPER` key.
 ### Layout keybindings
 | Keybinding |  Action|
 |:-----|------:|
+| MOD + E | toggle rounded corners |
 | MOD + C | tiling layout |
 | MOD + D | floating layout |
 | MOD + X | monocle (fullscreen) layout |

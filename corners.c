@@ -1,12 +1,14 @@
 // Works corrently only in tiling mode
+#include <X11/Xlib.h>
 void roundcorners(Client *c) {
   Window w = c->win;
   XWindowAttributes wa;
   XGetWindowAttributes(dpy, w, &wa);
 
   // Borders
-  if (c->mon->cornerrad > 0)
-    c->mon->borderpx = 0;
+  if (c->mon->cornerrad > 0) {
+    c->mon->borderpx = borderpx;
+  }
   else {
     c->mon->borderpx = borderpx;
   }
@@ -15,11 +17,11 @@ void roundcorners(Client *c) {
   if (!XGetWindowAttributes(dpy, w, &wa))
     return;
 
-  int width = borderpx * 2 + wa.width;
-  int height = borderpx * 2 + wa.height;
+  int width = c->mon->borderpx * 2 + wa.width;
+  int height = c->mon->borderpx * 2 + wa.height;
   /* int width = win_attr.border_width * 2 + win_attr.width; */
   /* int height = win_attr.border_width * 2 + win_attr.height; */
-  int rad = cornerrad;
+  int rad = c->mon->cornerrad;
   int dia = 2 * rad;
 
   // do not try to round if the window would be smaller than the corners
@@ -38,22 +40,39 @@ void roundcorners(Client *c) {
     return;
   }
 
-  if (c->mon->cornerrad > 0) {
-    XSetForeground(dpy, shape_gc, 0);
-    XFillRectangle(dpy, mask, shape_gc, 0, 0, width, height);
-    XSetForeground(dpy, shape_gc, 1);
+  XSetForeground(dpy, shape_gc, 0);
+  XFillRectangle(dpy, mask, shape_gc, 0, 0, width, height);
+  XSetForeground(dpy, shape_gc, 1);
+
+  if (c->mon->cornerrad > 0 && &tile == c->mon->lt[c->mon->sellt]->arrange) {
+    // Rounded corners - X Y W H
     XFillArc(dpy, mask, shape_gc, 0, 0, dia, dia, 0, 23040);
-    XFillArc(dpy, mask, shape_gc, width - dia - 1 - borderpx, 0, dia, dia, 0,
-             23040);
-    XFillArc(dpy, mask, shape_gc, 0, height - dia - 1, dia, dia-borderpx, 0, 23040);
-    XFillArc(dpy, mask, shape_gc, width - dia - 1 - borderpx,
-             height - dia - 1 - 3, dia, dia, 0, 23040);
-    XFillRectangle(dpy, mask, shape_gc, rad, 0, width - dia, height);
-    XFillRectangle(dpy, mask, shape_gc, 0, rad, width, height - dia);
-    XShapeCombineMask(dpy, w, ShapeBounding, 0 - wa.border_width,
-                      0 - wa.border_width, mask, ShapeSet);
+    XFillArc(dpy, mask, shape_gc, width - dia, 0, dia, dia, 0,23040);
+    XFillArc(dpy, mask, shape_gc, 0, height - dia, dia, dia, 0,23040);
+    XFillArc(dpy, mask, shape_gc, width - dia, height - dia, dia, dia, 0, 23040);
+
+    //XFillArc(dpy, mask, shape_gc, 0, 0, dia, dia, 0, 23040);
+    //XFillArc(dpy, mask, shape_gc, width - dia - borderpx, 0, dia, dia, 0,23040);
+    //XFillArc(dpy, mask, shape_gc, 0, height - dia, dia, dia, 0,23040);
+    //XFillArc(dpy, mask, shape_gc, width - dia - borderpx, height - dia, dia, dia, 0, 23040);
+  } else {
+    // Square (normal) corners - X Y W H
+    XFillRectangle(dpy, mask, shape_gc, 0, 0, dia, dia);
+    XFillRectangle(dpy, mask, shape_gc, width - dia, 0, dia, dia);
+    XFillRectangle(dpy, mask, shape_gc, 0, height - dia, dia, dia);
+    XFillRectangle(dpy, mask, shape_gc, width - dia, height - dia, dia, dia);
+
+    //XFillRectangle(dpy, mask, shape_gc, 0, 0, dia, dia);
+    //XFillRectangle(dpy, mask, shape_gc, width - dia - 1 - borderpx, 0, dia, dia);
+    //XFillRectangle(dpy, mask, shape_gc, 0, height - dia - 1, dia, dia);
+    //XFillRectangle(dpy, mask, shape_gc, width - dia - 1 - borderpx, height - dia - 1 - 3, dia, dia);
   }
 
+  // Fill everything else
+  XFillRectangle(dpy, mask, shape_gc, rad, 0, width - dia, height);
+  XFillRectangle(dpy, mask, shape_gc, 0, rad, width, height - dia);
+  XShapeCombineMask(dpy, w, ShapeBounding, 0 - wa.border_width,
+                    0 - wa.border_width, mask, ShapeSet);
   XFreePixmap(dpy, mask);
   XFreeGC(dpy, shape_gc);
 }
@@ -61,9 +80,12 @@ void roundcorners(Client *c) {
 // Doesn't play nicely with previously opened windows
 // Has no effect when cornerrad = 0
 void togglecorners(const Arg *arg) {
-  if (selmon->cornerrad > 0)
+  if (selmon->cornerrad > 0) {
     selmon->cornerrad = 0;
-  else
+    //selmon->borderpx = 0;
+  } else {
     selmon->cornerrad = cornerrad;
+    //selmon->borderpx = borderpx;
+  }
   arrange(selmon);
 }
