@@ -18,11 +18,12 @@ This is my personal build of [dwm](https://dwm.suckless.org/).
 - custom patches (no .diff files)
 
 ## Custom patches
-- modified drawbar and tile functions
+- modified drawbar, tile and view functions
 - barpos.c
 - gaps.c
 - tags.c
 - volume.c
+- more but I've forgotten
 
 ## Expected packages
 - alacritty

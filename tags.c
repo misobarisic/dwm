@@ -41,9 +41,9 @@ void relativemoveview(const Arg *arg) {
 }
 
 void viewtag(const Arg *arg) {
-  int tmp = 1 << arg->ui;
-  if (selmon->sel && tmp) {
-    selmon->sel->tags = tmp & TAGMASK;
+  int endtag = 1 << arg->ui;
+  if (selmon->sel && endtag) {
+    selmon->sel->tags = endtag & TAGMASK;
     selmon->selectedtag = arg->ui;
     focus(NULL);
     view(arg);

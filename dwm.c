@@ -40,7 +40,7 @@
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
 #include <X11/Xft/Xft.h>
-
+#include <X11/extensions/shape.h>
 #include "drw.h"
 #include "util.h"
 
@@ -164,6 +164,8 @@ struct Monitor {
   int wx, wy, ww, wh; /* window area  */
   int gappx;          /* gap in pixels between windows  */
   int sidegappx;      /* gap pixel between layout and sides */
+  int borderpx;
+  int cornerrad;
   unsigned int seltags;
   unsigned int sellt;
   unsigned int tagset[2];
@@ -429,6 +431,7 @@ int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact) {
 }
 
 void arrange(Monitor *m) {
+  roundcorners(m->stack);
   if (m)
     showhide(m->stack);
   else
@@ -672,6 +675,8 @@ Monitor *createmon(void) {
   m->topbar = topbar;
   m->gappx = gappx;
   m->sidegappx = sidegappx;
+  m->borderpx = borderpx;
+  m->cornerrad = cornerrad;
   m->selectedtag = 1;
   m->lt[0] = &layouts[0];
   m->lt[1] = &layouts[1 % LENGTH(layouts)];
@@ -1149,7 +1154,7 @@ void manage(Window w, XWindowAttributes *wa) {
               (c->x + (c->w / 2) < c->mon->wx + c->mon->ww))
                  ? bh
                  : c->mon->my);
-  c->bw = borderpx;
+  c->bw = c->mon->borderpx;
 
   wc.border_width = c->bw;
   XConfigureWindow(dpy, w, CWBorderWidth, &wc);
@@ -1376,6 +1381,7 @@ void resizeclient(Client *c, int x, int y, int w, int h) {
   XConfigureWindow(dpy, c->win, CWX | CWY | CWWidth | CWHeight | CWBorderWidth,
                    &wc);
   configure(c);
+  roundcorners(c);
   XSync(dpy, False);
 }
 
@@ -1442,6 +1448,9 @@ void restack(Monitor *m) {
   Client *c;
   XEvent ev;
   XWindowChanges wc;
+
+  for (c = m->stack; c; c = c->snext)
+    roundcorners(c);
 
   drawbar(m);
   if (!m->sel)

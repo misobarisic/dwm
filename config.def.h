@@ -7,7 +7,8 @@ static const unsigned int arrowpx   = 12;       /* arrow size in px */
 static const unsigned int s_arrowpx = 12;       /* arrow size in px */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int gappx     = 2;        /* gap pixel between windows */
-static const unsigned int sidegappx = 8;       /* gap pixel between layout and sides */
+static const unsigned int sidegappx = 8;        /* gap pixel between layout and sides */
+static const unsigned int cornerrad = 0;		/* corner radius */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
@@ -66,6 +67,7 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
 #include "barpos.c"
+#include "corners.c"
 #include "fibonacci.c"
 #include "gaps.c"
 #include "movestack.c"
@@ -137,6 +139,9 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_a,      relativemoveview,   {.i = -1} },
 	{ MODKEY|ShiftMask,             XK_x,      relativemove,   {.i = +1} },
 	{ MODKEY|ShiftMask,             XK_y,      relativemove,   {.i = -1} },
+
+    // Corner controls
+	{ MODKEY,                       XK_e,      togglecorners,  {0} },
 
 	{ MODKEY,					    XK_n,      cyclelayout,    {.i = +1 } },
 	{ MODKEY,         			    XK_m,      cyclelayout,    {.i = -1 } },
