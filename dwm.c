@@ -125,6 +125,7 @@ typedef struct {
   const Arg arg;
 } Button;
 
+typedef struct TagData TagData;
 typedef struct Monitor Monitor;
 typedef struct Client Client;
 struct Client {
@@ -178,6 +179,7 @@ struct Monitor {
   Monitor *next;
   Window barwin;
   const Layout *lt[2];
+  TagData *tagdata;
 };
 
 typedef struct {
@@ -321,6 +323,17 @@ static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
+
+#include "tags.h"
+
+struct TagData {
+	unsigned int curtag, prevtag; /* current and previous tag */
+	int nmasters[LENGTH(tags) + 1]; /* number of windows in master area */
+	float mfacts[LENGTH(tags) + 1]; /* mfacts per tag */
+	unsigned int sellts[LENGTH(tags) + 1]; /* selected layouts */
+	const Layout *ltidxs[LENGTH(tags) + 1][2]; /* matrix of tags and layouts indexes  */
+	int showbars[10]; /* display bar for the current tag */
+};
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
@@ -665,6 +678,7 @@ void configurerequest(XEvent *e) {
 
 Monitor *createmon(void) {
   Monitor *m;
+  unsigned int i;
 
   m = ecalloc(1, sizeof(Monitor));
   m->tagset[0] = m->tagset[1] = 1;
@@ -680,6 +694,22 @@ Monitor *createmon(void) {
   m->lt[0] = &layouts[0];
   m->lt[1] = &layouts[1 % LENGTH(layouts)];
   strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
+
+	m->tagdata = ecalloc(1, sizeof(TagData));
+	m->tagdata->curtag = m->tagdata->prevtag = 1;
+
+	for (i = 0; i <= LENGTH(tags); i++) {
+		m->tagdata->nmasters[i] = m->nmaster;
+		m->tagdata->mfacts[i] = m->mfact;
+
+		m->tagdata->ltidxs[i][0] = m->lt[0];
+		m->tagdata->ltidxs[i][1] = m->lt[1];
+		m->tagdata->sellts[i] = m->sellt;
+
+		m->tagdata->showbars[i] = m->showbar;
+	}
+
+
   return m;
 }
 
@@ -1077,7 +1107,8 @@ void grabkeys(void) {
 }
 
 void incnmaster(const Arg *arg) {
-  selmon->nmaster = MAX(selmon->nmaster + arg->i, 0);
+  //selmon->nmaster = MAX(selmon->nmaster + arg->i, 0);
+  selmon->nmaster = selmon->tagdata->nmasters[selmon->tagdata->curtag] = MAX(selmon->nmaster + arg->i, 0);
   arrange(selmon);
 }
 
@@ -1388,8 +1419,12 @@ void resizeclient(Client *c, int x, int y, int w, int h) {
 		wc.border_width = 0;
 	}
   */
+  //|| (nexttiled(c->mon->clients) == c && !nexttiled(c->next)) 
 
-  if (c->mon->cornerrad > 0) {
+
+  if (&tile != c->mon->lt[c->mon->sellt]->arrange) {
+    wc.border_width = c->bw;
+  } else if (c->mon->cornerrad > 0) {
     //c->w = wc.width += c->bw;
 		//c->h = wc.height += c->bw;
 		wc.border_width = 0;
@@ -1399,7 +1434,6 @@ void resizeclient(Client *c, int x, int y, int w, int h) {
 		wc.border_width = c->bw;
   }
   
-
   XConfigureWindow(dpy, c->win, CWX | CWY | CWWidth | CWHeight | CWBorderWidth,
                    &wc);
   configure(c);
@@ -1409,10 +1443,15 @@ void resizeclient(Client *c, int x, int y, int w, int h) {
 
 void resizemouse(const Arg *arg) {
   int ocx, ocy, nw, nh;
-  Client *c;
-  Monitor *m;
-  XEvent ev;
-  Time lasttime = 0;
+	int ocx2, ocy2, nx, ny;
+ 	Client *c;
+ 	Monitor *m;
+ 	XEvent ev;
+	int horizcorner, vertcorner;
+	int di;
+	unsigned int dui;
+	Window dummy;
+ 	Time lasttime = 0;
 
   if (!(c = selmon->sel))
     return;
@@ -1421,11 +1460,18 @@ void resizemouse(const Arg *arg) {
   restack(selmon);
   ocx = c->x;
   ocy = c->y;
+  ocx2 = c->x + c->w;
+  ocy2 = c->y + c->h;
   if (XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync, GrabModeAsync,
                    None, cursor[CurResize]->cursor, CurrentTime) != GrabSuccess)
     return;
-  XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w + c->bw - 1,
-               c->h + c->bw - 1);
+  if (!XQueryPointer (dpy, c->win, &dummy, &dummy, &di, &di, &nx, &ny, &dui))
+		return;
+	horizcorner = nx < c->w / 2;
+	vertcorner  = ny < c->h / 2;
+	XWarpPointer (dpy, None, c->win, 0, 0, 0, 0,
+			horizcorner ? (-c->bw) : (c->w + c->bw -1),
+			vertcorner  ? (-c->bw) : (c->h + c->bw -1));
   do {
     XMaskEvent(dpy, MOUSEMASK | ExposureMask | SubstructureRedirectMask, &ev);
     switch (ev.type) {
@@ -1441,6 +1487,11 @@ void resizemouse(const Arg *arg) {
 
       nw = MAX(ev.xmotion.x - ocx - 2 * c->bw + 1, 1);
       nh = MAX(ev.xmotion.y - ocy - 2 * c->bw + 1, 1);
+      nx = horizcorner ? ev.xmotion.x : c->x;
+			ny = vertcorner ? ev.xmotion.y : c->y;
+			nw = MAX(horizcorner ? (ocx2 - nx) : (ev.xmotion.x - ocx - 2 * c->bw + 1), 1);
+			nh = MAX(vertcorner ? (ocy2 - ny) : (ev.xmotion.y - ocy - 2 * c->bw + 1), 1);
+
       if (c->mon->wx + nw >= selmon->wx &&
           c->mon->wx + nw <= selmon->wx + selmon->ww &&
           c->mon->wy + nh >= selmon->wy &&
@@ -1450,12 +1501,13 @@ void resizemouse(const Arg *arg) {
           togglefloating(NULL);
       }
       if (!selmon->lt[selmon->sellt]->arrange || c->isfloating)
-        resize(c, c->x, c->y, nw, nh, 1);
+        resize(c, nx, ny, nw, nh, 1);
       break;
     }
   } while (ev.type != ButtonRelease);
-  XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w + c->bw - 1,
-               c->h + c->bw - 1);
+  XWarpPointer(dpy, None, c->win, 0, 0, 0, 0,
+		      horizcorner ? (-c->bw) : (c->w + c->bw - 1),
+		      vertcorner ? (-c->bw) : (c->h + c->bw - 1));
   XUngrabPointer(dpy, CurrentTime);
   while (XCheckMaskEvent(dpy, EnterWindowMask, &ev))
     ;
@@ -1614,9 +1666,11 @@ void setfullscreen(Client *c, int fullscreen) {
 
 void setlayout(const Arg *arg) {
   if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
-    selmon->sellt ^= 1;
+    //selmon->sellt ^= 1;
+    selmon->sellt = selmon->tagdata->sellts[selmon->tagdata->curtag] ^= 1;
   if (arg && arg->v)
-    selmon->lt[selmon->sellt] = (Layout *)arg->v;
+    //selmon->lt[selmon->sellt] = (Layout *)arg->v;
+    selmon->lt[selmon->sellt] = selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt] = (Layout *)arg->v;
   strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol,
           sizeof selmon->ltsymbol);
   if (selmon->sel)
@@ -1634,7 +1688,8 @@ void setmfact(const Arg *arg) {
   f = arg->f < 1.0 ? arg->f + selmon->mfact : arg->f - 1.0;
   if (f < 0.05 || f > 0.95)
     return;
-  selmon->mfact = f;
+  //selmon->mfact = f;
+  selmon->mfact = selmon->tagdata->mfacts[selmon->tagdata->curtag] = f;
   arrange(selmon);
 }
 
@@ -1826,7 +1881,8 @@ void tile(Monitor *m) {
 }
 
 void togglebar(const Arg *arg) {
-  selmon->showbar = !selmon->showbar;
+  //selmon->showbar = !selmon->showbar;
+  selmon->showbar = selmon->tagdata->showbars[selmon->tagdata->curtag] = !selmon->showbar;
   updatebarpos(selmon);
   XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww,
                     bh);
@@ -1861,9 +1917,33 @@ void toggletag(const Arg *arg) {
 void toggleview(const Arg *arg) {
   unsigned int newtagset =
       selmon->tagset[selmon->seltags] ^ (arg->ui & TAGMASK);
+  int i;
 
   if (newtagset) {
     selmon->tagset[selmon->seltags] = newtagset;
+
+    if (newtagset == ~0) {
+			selmon->tagdata->prevtag = selmon->tagdata->curtag;
+			selmon->tagdata->curtag = 0;
+		}
+
+		/* test if the user did not select the same tag */
+		if (!(newtagset & 1 << (selmon->tagdata->curtag - 1))) {
+			selmon->tagdata->prevtag = selmon->tagdata->curtag;
+			for (i = 0; !(newtagset & 1 << i); i++) ;
+			selmon->tagdata->curtag = i + 1;
+		}
+
+		/* apply settings for this view */
+		selmon->nmaster = selmon->tagdata->nmasters[selmon->tagdata->curtag];
+		selmon->mfact = selmon->tagdata->mfacts[selmon->tagdata->curtag];
+		selmon->sellt = selmon->tagdata->sellts[selmon->tagdata->curtag];
+		selmon->lt[selmon->sellt] = selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt];
+		selmon->lt[selmon->sellt^1] = selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt^1];
+
+		if (selmon->showbar != selmon->tagdata->showbars[selmon->tagdata->curtag])
+			togglebar(NULL);
+
     focus(NULL);
     arrange(selmon);
   }
@@ -2129,12 +2209,38 @@ void updatewmhints(Client *c) {
 }
 
 void view(const Arg *arg) {
+  int i;
+	unsigned int tmptag;
+
   int endtag = 1 << arg->ui;
   if ((endtag & TAGMASK) == selmon->tagset[selmon->seltags])
     return;
   selmon->seltags ^= 1; /* toggle sel tagset */
-  if (endtag & TAGMASK)
+  if (endtag & TAGMASK) {
     selmon->tagset[selmon->seltags] = endtag & TAGMASK;
+    selmon->tagdata->prevtag = selmon->tagdata->curtag;
+
+		if (endtag == ~0)
+			selmon->tagdata->curtag = 0;
+		else {
+			for (i = 0; !(endtag& 1 << i); i++) ;
+			selmon->tagdata->curtag = i + 1;
+		}
+	} else {
+		tmptag = selmon->tagdata->prevtag;
+		selmon->tagdata->prevtag = selmon->tagdata->curtag;
+		selmon->tagdata->curtag = tmptag;
+	}
+
+	selmon->nmaster = selmon->tagdata->nmasters[selmon->tagdata->curtag];
+	selmon->mfact = selmon->tagdata->mfacts[selmon->tagdata->curtag];
+	selmon->sellt = selmon->tagdata->sellts[selmon->tagdata->curtag];
+	selmon->lt[selmon->sellt] = selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt];
+	selmon->lt[selmon->sellt^1] = selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt^1];
+
+	if (selmon->showbar != selmon->tagdata->showbars[selmon->tagdata->curtag])
+		togglebar(NULL);
+
   selmon->selectedtag = arg->ui;
   focus(NULL);
   arrange(selmon);

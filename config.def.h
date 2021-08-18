@@ -44,10 +44,6 @@ static const char *colors[][3]      = {
 /* bar height */
 static const int user_bh = 24; /* 0 means that dwm will calculate bar height */
 
-/* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8"};
-/*static const char *tags[] = { "", "", "", "", "", "", "" };
-*/
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
