@@ -327,12 +327,13 @@ static Window root, wmcheckwin;
 #include "tags.h"
 
 struct TagData {
-	unsigned int curtag, prevtag; /* current and previous tag */
-	int nmasters[LENGTH(tags) + 1]; /* number of windows in master area */
-	float mfacts[LENGTH(tags) + 1]; /* mfacts per tag */
-	unsigned int sellts[LENGTH(tags) + 1]; /* selected layouts */
-	const Layout *ltidxs[LENGTH(tags) + 1][2]; /* matrix of tags and layouts indexes  */
-	int showbars[10]; /* display bar for the current tag */
+  unsigned int curtag, prevtag;          /* current and previous tag */
+  int nmasters[LENGTH(tags) + 1];        /* number of windows in master area */
+  float mfacts[LENGTH(tags) + 1];        /* mfacts per tag */
+  unsigned int sellts[LENGTH(tags) + 1]; /* selected layouts */
+  const Layout
+      *ltidxs[LENGTH(tags) + 1][2]; /* matrix of tags and layouts indexes  */
+  int showbars[10];                 /* display bar for the current tag */
 };
 
 /* configuration, allows nested code to access above variables */
@@ -690,25 +691,24 @@ Monitor *createmon(void) {
   m->sidegappx = sidegappx;
   m->borderpx = borderpx;
   m->cornerrad = cornerrad;
-  m->selectedtag = 1;
+  m->selectedtag = 0;
   m->lt[0] = &layouts[0];
   m->lt[1] = &layouts[1 % LENGTH(layouts)];
   strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
 
-	m->tagdata = ecalloc(1, sizeof(TagData));
-	m->tagdata->curtag = m->tagdata->prevtag = 1;
+  m->tagdata = ecalloc(1, sizeof(TagData));
+  m->tagdata->curtag = m->tagdata->prevtag = 1;
 
-	for (i = 0; i <= LENGTH(tags); i++) {
-		m->tagdata->nmasters[i] = m->nmaster;
-		m->tagdata->mfacts[i] = m->mfact;
+  for (i = 0; i <= LENGTH(tags); i++) {
+    m->tagdata->nmasters[i] = m->nmaster;
+    m->tagdata->mfacts[i] = m->mfact;
 
-		m->tagdata->ltidxs[i][0] = m->lt[0];
-		m->tagdata->ltidxs[i][1] = m->lt[1];
-		m->tagdata->sellts[i] = m->sellt;
+    m->tagdata->ltidxs[i][0] = m->lt[0];
+    m->tagdata->ltidxs[i][1] = m->lt[1];
+    m->tagdata->sellts[i] = m->sellt;
 
-		m->tagdata->showbars[i] = m->showbar;
-	}
-
+    m->tagdata->showbars[i] = m->showbar;
+  }
 
   return m;
 }
@@ -1107,8 +1107,9 @@ void grabkeys(void) {
 }
 
 void incnmaster(const Arg *arg) {
-  //selmon->nmaster = MAX(selmon->nmaster + arg->i, 0);
-  selmon->nmaster = selmon->tagdata->nmasters[selmon->tagdata->curtag] = MAX(selmon->nmaster + arg->i, 0);
+  // selmon->nmaster = MAX(selmon->nmaster + arg->i, 0);
+  selmon->nmaster = selmon->tagdata->nmasters[selmon->tagdata->curtag] =
+      MAX(selmon->nmaster + arg->i, 0);
   arrange(selmon);
 }
 
@@ -1412,28 +1413,30 @@ void resizeclient(Client *c, int x, int y, int w, int h) {
   // Remove border
   /*
   if ((((nexttiled(c->mon->clients) == c && !nexttiled(c->next))
-	    || &monocle == c->mon->lt[c->mon->sellt]->arrange)
-	    && !c->isfullscreen && !c->isfloating) || c->mon->cornerrad > 0) {
-		c->w = wc.width += c->bw * 2;
-		c->h = wc.height += c->bw * 2;
-		wc.border_width = 0;
-	}
+            || &monocle == c->mon->lt[c->mon->sellt]->arrange)
+            && !c->isfullscreen && !c->isfloating) || c->mon->cornerrad > 0) {
+                c->w = wc.width += c->bw * 2;
+                c->h = wc.height += c->bw * 2;
+                wc.border_width = 0;
+        }
   */
-  //|| (nexttiled(c->mon->clients) == c && !nexttiled(c->next)) 
+  //|| (nexttiled(c->mon->clients) == c && !nexttiled(c->next))
 
+  if (&monocle == c->mon->lt[c->mon->sellt]->arrange &&
+      !selmon->tagdata->showbars[selmon->tagdata->curtag]) {
 
-  if (&tile != c->mon->lt[c->mon->sellt]->arrange) {
+  } else if (&tilegaps != c->mon->lt[c->mon->sellt]->arrange) {
     wc.border_width = c->bw;
   } else if (c->mon->cornerrad > 0) {
-    //c->w = wc.width += c->bw;
-		//c->h = wc.height += c->bw;
-		wc.border_width = 0;
+    // c->w = wc.width += c->bw;
+    // c->h = wc.height += c->bw;
+    wc.border_width = 0;
   } else {
-    //c->w = wc.width -= c->bw;
-		//c->h = wc.height -= c->bw;
-		wc.border_width = c->bw;
+    // c->w = wc.width -= c->bw;
+    // c->h = wc.height -= c->bw;
+    wc.border_width = c->bw;
   }
-  
+
   XConfigureWindow(dpy, c->win, CWX | CWY | CWWidth | CWHeight | CWBorderWidth,
                    &wc);
   configure(c);
@@ -1443,15 +1446,15 @@ void resizeclient(Client *c, int x, int y, int w, int h) {
 
 void resizemouse(const Arg *arg) {
   int ocx, ocy, nw, nh;
-	int ocx2, ocy2, nx, ny;
- 	Client *c;
- 	Monitor *m;
- 	XEvent ev;
-	int horizcorner, vertcorner;
-	int di;
-	unsigned int dui;
-	Window dummy;
- 	Time lasttime = 0;
+  int ocx2, ocy2, nx, ny;
+  Client *c;
+  Monitor *m;
+  XEvent ev;
+  int horizcorner, vertcorner;
+  int di;
+  unsigned int dui;
+  Window dummy;
+  Time lasttime = 0;
 
   if (!(c = selmon->sel))
     return;
@@ -1465,13 +1468,13 @@ void resizemouse(const Arg *arg) {
   if (XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync, GrabModeAsync,
                    None, cursor[CurResize]->cursor, CurrentTime) != GrabSuccess)
     return;
-  if (!XQueryPointer (dpy, c->win, &dummy, &dummy, &di, &di, &nx, &ny, &dui))
-		return;
-	horizcorner = nx < c->w / 2;
-	vertcorner  = ny < c->h / 2;
-	XWarpPointer (dpy, None, c->win, 0, 0, 0, 0,
-			horizcorner ? (-c->bw) : (c->w + c->bw -1),
-			vertcorner  ? (-c->bw) : (c->h + c->bw -1));
+  if (!XQueryPointer(dpy, c->win, &dummy, &dummy, &di, &di, &nx, &ny, &dui))
+    return;
+  horizcorner = nx < c->w / 2;
+  vertcorner = ny < c->h / 2;
+  XWarpPointer(dpy, None, c->win, 0, 0, 0, 0,
+               horizcorner ? (-c->bw) : (c->w + c->bw - 1),
+               vertcorner ? (-c->bw) : (c->h + c->bw - 1));
   do {
     XMaskEvent(dpy, MOUSEMASK | ExposureMask | SubstructureRedirectMask, &ev);
     switch (ev.type) {
@@ -1488,9 +1491,9 @@ void resizemouse(const Arg *arg) {
       nw = MAX(ev.xmotion.x - ocx - 2 * c->bw + 1, 1);
       nh = MAX(ev.xmotion.y - ocy - 2 * c->bw + 1, 1);
       nx = horizcorner ? ev.xmotion.x : c->x;
-			ny = vertcorner ? ev.xmotion.y : c->y;
-			nw = MAX(horizcorner ? (ocx2 - nx) : (ev.xmotion.x - ocx - 2 * c->bw + 1), 1);
-			nh = MAX(vertcorner ? (ocy2 - ny) : (ev.xmotion.y - ocy - 2 * c->bw + 1), 1);
+      ny = vertcorner ? ev.xmotion.y : c->y;
+      nw = MAX(horizcorner ? (ocx2 - nx) : (ev.xmotion.x - ocx - 2 * c->bw + 1),1);
+      nh = MAX(vertcorner ? (ocy2 - ny) : (ev.xmotion.y - ocy - 2 * c->bw + 1),1);
 
       if (c->mon->wx + nw >= selmon->wx &&
           c->mon->wx + nw <= selmon->wx + selmon->ww &&
@@ -1506,8 +1509,8 @@ void resizemouse(const Arg *arg) {
     }
   } while (ev.type != ButtonRelease);
   XWarpPointer(dpy, None, c->win, 0, 0, 0, 0,
-		      horizcorner ? (-c->bw) : (c->w + c->bw - 1),
-		      vertcorner ? (-c->bw) : (c->h + c->bw - 1));
+               horizcorner ? (-c->bw) : (c->w + c->bw - 1),
+               vertcorner ? (-c->bw) : (c->h + c->bw - 1));
   XUngrabPointer(dpy, CurrentTime);
   while (XCheckMaskEvent(dpy, EnterWindowMask, &ev))
     ;
@@ -1666,11 +1669,13 @@ void setfullscreen(Client *c, int fullscreen) {
 
 void setlayout(const Arg *arg) {
   if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
-    //selmon->sellt ^= 1;
+    // selmon->sellt ^= 1;
     selmon->sellt = selmon->tagdata->sellts[selmon->tagdata->curtag] ^= 1;
   if (arg && arg->v)
-    //selmon->lt[selmon->sellt] = (Layout *)arg->v;
-    selmon->lt[selmon->sellt] = selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt] = (Layout *)arg->v;
+    // selmon->lt[selmon->sellt] = (Layout *)arg->v;
+    selmon->lt[selmon->sellt] =
+        selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt] =
+            (Layout *)arg->v;
   strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol,
           sizeof selmon->ltsymbol);
   if (selmon->sel)
@@ -1688,7 +1693,7 @@ void setmfact(const Arg *arg) {
   f = arg->f < 1.0 ? arg->f + selmon->mfact : arg->f - 1.0;
   if (f < 0.05 || f > 0.95)
     return;
-  //selmon->mfact = f;
+  // selmon->mfact = f;
   selmon->mfact = selmon->tagdata->mfacts[selmon->tagdata->curtag] = f;
   arrange(selmon);
 }
@@ -1841,7 +1846,7 @@ void tagmon(const Arg *arg) {
 }
 
 void tile(Monitor *m) {
-  unsigned int i, n, h, r, g = 0, mw, my, ty;
+  unsigned int i, n, h, mw, my, ty;
   Client *c;
 
   for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++)
@@ -1849,40 +1854,30 @@ void tile(Monitor *m) {
   if (n == 0)
     return;
 
-  if (n > m->nmaster) {
-    mw = m->nmaster ? (m->ww - (g = m->gappx)) * m->mfact : 0;
-  } else {
+  if (n > m->nmaster)
+    mw = m->nmaster ? m->ww * m->mfact : 0;
+  else
     mw = m->ww;
-  }
-
-  for (i = 0, my = ty = m->sidegappx * 2, c = nexttiled(m->clients); c;
+  for (i = my = ty = 0, c = nexttiled(m->clients); c;
        c = nexttiled(c->next), i++)
     if (i < m->nmaster) {
-      r = MIN(n, m->nmaster) - i;
-      h = ((m->wh - my - m->gappx * (r - 1)) / r);
-      resize(c, m->wx + m->sidegappx, m->wy + my - m->sidegappx,
-             mw - (2 * c->bw) - m->sidegappx -
-                 (nexttiled(c->next) != NULL
-                      ? 0
-                      : m->sidegappx), // Check if there's only 1 window
-                                       // present. If true, add right padding
-             h - (2 * c->bw), 0);
+      h = (m->wh - my) / (MIN(n, m->nmaster) - i);
+      resize(c, m->wx, m->wy + my, mw - (2 * c->bw), h - (2 * c->bw), 0);
       if (my + HEIGHT(c) < m->wh)
-        my += HEIGHT(c) + m->gappx;
+        my += HEIGHT(c);
     } else {
-      r = n - i;
-      h = (m->wh - ty - m->gappx * (r - 1)) / r;
-      resize(c, m->wx + mw + g, m->wy + ty - m->sidegappx,
-             m->ww - mw - g - (2 * c->bw) - m->sidegappx, h - (2 * c->bw),
-             False);
+      h = (m->wh - ty) / (n - i);
+      resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2 * c->bw),
+             h - (2 * c->bw), 0);
       if (ty + HEIGHT(c) < m->wh)
-        ty += HEIGHT(c) + m->gappx;
+        ty += HEIGHT(c);
     }
 }
 
 void togglebar(const Arg *arg) {
-  //selmon->showbar = !selmon->showbar;
-  selmon->showbar = selmon->tagdata->showbars[selmon->tagdata->curtag] = !selmon->showbar;
+  // selmon->showbar = !selmon->showbar;
+  selmon->showbar = selmon->tagdata->showbars[selmon->tagdata->curtag] =
+      !selmon->showbar;
   updatebarpos(selmon);
   XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww,
                     bh);
@@ -1923,26 +1918,29 @@ void toggleview(const Arg *arg) {
     selmon->tagset[selmon->seltags] = newtagset;
 
     if (newtagset == ~0) {
-			selmon->tagdata->prevtag = selmon->tagdata->curtag;
-			selmon->tagdata->curtag = 0;
-		}
+      selmon->tagdata->prevtag = selmon->tagdata->curtag;
+      selmon->tagdata->curtag = 0;
+    }
 
-		/* test if the user did not select the same tag */
-		if (!(newtagset & 1 << (selmon->tagdata->curtag - 1))) {
-			selmon->tagdata->prevtag = selmon->tagdata->curtag;
-			for (i = 0; !(newtagset & 1 << i); i++) ;
-			selmon->tagdata->curtag = i + 1;
-		}
+    /* test if the user did not select the same tag */
+    if (!(newtagset & 1 << (selmon->tagdata->curtag - 1))) {
+      selmon->tagdata->prevtag = selmon->tagdata->curtag;
+      for (i = 0; !(newtagset & 1 << i); i++)
+        ;
+      selmon->tagdata->curtag = i + 1;
+    }
 
-		/* apply settings for this view */
-		selmon->nmaster = selmon->tagdata->nmasters[selmon->tagdata->curtag];
-		selmon->mfact = selmon->tagdata->mfacts[selmon->tagdata->curtag];
-		selmon->sellt = selmon->tagdata->sellts[selmon->tagdata->curtag];
-		selmon->lt[selmon->sellt] = selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt];
-		selmon->lt[selmon->sellt^1] = selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt^1];
+    /* apply settings for this view */
+    selmon->nmaster = selmon->tagdata->nmasters[selmon->tagdata->curtag];
+    selmon->mfact = selmon->tagdata->mfacts[selmon->tagdata->curtag];
+    selmon->sellt = selmon->tagdata->sellts[selmon->tagdata->curtag];
+    selmon->lt[selmon->sellt] =
+        selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt];
+    selmon->lt[selmon->sellt ^ 1] =
+        selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt ^ 1];
 
-		if (selmon->showbar != selmon->tagdata->showbars[selmon->tagdata->curtag])
-			togglebar(NULL);
+    if (selmon->showbar != selmon->tagdata->showbars[selmon->tagdata->curtag])
+      togglebar(NULL);
 
     focus(NULL);
     arrange(selmon);
@@ -2210,7 +2208,7 @@ void updatewmhints(Client *c) {
 
 void view(const Arg *arg) {
   int i;
-	unsigned int tmptag;
+  unsigned int tmptag;
 
   int endtag = 1 << arg->ui;
   if ((endtag & TAGMASK) == selmon->tagset[selmon->seltags])
@@ -2220,26 +2218,28 @@ void view(const Arg *arg) {
     selmon->tagset[selmon->seltags] = endtag & TAGMASK;
     selmon->tagdata->prevtag = selmon->tagdata->curtag;
 
-		if (endtag == ~0)
-			selmon->tagdata->curtag = 0;
-		else {
-			for (i = 0; !(endtag& 1 << i); i++) ;
-			selmon->tagdata->curtag = i + 1;
-		}
-	} else {
-		tmptag = selmon->tagdata->prevtag;
-		selmon->tagdata->prevtag = selmon->tagdata->curtag;
-		selmon->tagdata->curtag = tmptag;
-	}
+    if (endtag == ~0)
+      selmon->tagdata->curtag = 0;
+    else {
+      for (i = 0; !(endtag& 1 << i); i++) ;
+      selmon->tagdata->curtag = i + 1;
+    }
+  } else {
+    tmptag = selmon->tagdata->prevtag;
+    selmon->tagdata->prevtag = selmon->tagdata->curtag;
+    selmon->tagdata->curtag = tmptag;
+  }
 
-	selmon->nmaster = selmon->tagdata->nmasters[selmon->tagdata->curtag];
-	selmon->mfact = selmon->tagdata->mfacts[selmon->tagdata->curtag];
-	selmon->sellt = selmon->tagdata->sellts[selmon->tagdata->curtag];
-	selmon->lt[selmon->sellt] = selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt];
-	selmon->lt[selmon->sellt^1] = selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt^1];
+  selmon->nmaster = selmon->tagdata->nmasters[selmon->tagdata->curtag];
+  selmon->mfact = selmon->tagdata->mfacts[selmon->tagdata->curtag];
+  selmon->sellt = selmon->tagdata->sellts[selmon->tagdata->curtag];
+  selmon->lt[selmon->sellt] =
+      selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt];
+  selmon->lt[selmon->sellt ^ 1] =
+      selmon->tagdata->ltidxs[selmon->tagdata->curtag][selmon->sellt ^ 1];
 
-	if (selmon->showbar != selmon->tagdata->showbars[selmon->tagdata->curtag])
-		togglebar(NULL);
+  if (selmon->showbar != selmon->tagdata->showbars[selmon->tagdata->curtag])
+    togglebar(NULL);
 
   selmon->selectedtag = arg->ui;
   focus(NULL);
@@ -2315,7 +2315,7 @@ void zoom(const Arg *arg) {
 
 int main(int argc, char *argv[]) {
   if (argc == 2 && !strcmp("-v", argv[1]))
-    die("dwm-" VERSION);
+    die("misobarisic's build of dwm based on vanilla-" VERSION);
   else if (argc != 1)
     die("usage: dwm [-v]");
   if (!setlocale(LC_CTYPE, "") || !XSupportsLocale())

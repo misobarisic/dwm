@@ -66,15 +66,18 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 #include "corners.c"
 #include "fibonacci.c"
 #include "gaps.c"
+#include "layouts.c"
 #include "movestack.c"
 #include "tags.c"
 #include "volume.c"
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[T]",      tile },    /* first entry is default */
+	{ "[T]",      tilegaps },    /* first entry is default */
+	{ "[t]",      tile },   
 	{ "[F]",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
+	{ "[G]",      grid },
 	{ "[@]",      spiral },
  	{ "[\\]",     dwindle },
 	{ NULL, NULL}
@@ -123,10 +126,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_m,      muteVolume,     {0} },
 
 	// Stack controls
-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } }, 
-	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1} },
-	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1} },
+	{ MODKEY,                       XK_k,      focusstack,     {.i = +1 } }, 
+	{ MODKEY,                       XK_j,      focusstack,     {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = +1} },
+	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = -1} },
 
 	// Relative controls
 	{ MODKEY,                       XK_s,      relativeview,   {.i = +1} },
@@ -139,27 +142,27 @@ static Key keys[] = {
     // Corner controls
 	{ MODKEY,                       XK_e,      togglecorners,  {0} },
 
-	{ MODKEY,					    XK_n,      cyclelayout,    {.i = +1 } },
-	{ MODKEY,         			    XK_m,      cyclelayout,    {.i = -1 } },
+	{ MODKEY,					    XK_m,      cyclelayout,    {.i = +1 } },
+	{ MODKEY,         			    XK_n,      cyclelayout,    {.i = -1 } },
 	
     // Inner gaps
-	{ MODKEY|ControlMask,   	    XK_j,      modifygaps,     {.i = +12} },
-	{ MODKEY|ControlMask,           XK_k,      modifygaps,     {.i = -12} },
+	{ MODKEY|ControlMask,   	    XK_k,      modifygaps,     {.i = +12} },
+	{ MODKEY|ControlMask,           XK_j,      modifygaps,     {.i = -12} },
 	{ MODKEY|ControlMask,           XK_n,      setgaps,        {.i = gappx} },
 
     // Outer gaps
-	{ MODKEY|ControlMask,   	    XK_u,      modifysidegaps, {.i = +12} },
-	{ MODKEY|ControlMask,           XK_i,      modifysidegaps, {.i = -12} },
+	{ MODKEY|ControlMask,   	    XK_i,      modifysidegaps, {.i = +12} },
+	{ MODKEY|ControlMask,           XK_u,      modifysidegaps, {.i = -12} },
 	{ MODKEY|ControlMask,           XK_m,      setsidegaps,    {.i = sidegappx} },
 
-	{ MODKEY,                       XK_u,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_i,      incnmaster,     {.i = -1 } },
+	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
+	{ MODKEY,                       XK_u,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 
 	{ MODKEY,                       XK_c,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_d,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_x,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_d,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_x,      setlayout,      {.v = &layouts[3]} },
 	{ MODKEY,                       XK_space,  togglefloating, {0} },
 	{ MODKEY|ShiftMask,             XK_space,  setlayout,      {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
