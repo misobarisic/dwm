@@ -833,7 +833,7 @@ void drawbar(Monitor *m) {
         drw_text(drw, sx, 0, tw, bh, 0, token, 0);
         sx += TEXTW(token) - lrpad;
       }
-
+      
       token = strtok(0, s);
       count++;
     }
@@ -867,18 +867,35 @@ void drawbar(Monitor *m) {
       x += arrowpx;
     }
 
+
     drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel
                               : occ & 1 << i                 ? SchemeActive
                                                              : SchemeNorm]);
     drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
+        x += w;
 
+    // Arrow after the last tag
+    if (i == LENGTH(tags) - 1) {
+     if (m->tagset[m->seltags] & 1 << i) {
+        drw_setscheme(drw, scheme[ArrowNorm]);
+        drw_arrow(drw, x, 0, arrowpx, bh, 1, 0);
+        //x += arrowpx;
+      } else {
+        drw_setscheme(drw, scheme[occ & 1 << i ? ArrowActive : ArrowBg]);
+        drw_arrow(drw, x, 0, arrowpx, bh, 1, 0);
+        //if (occ & 1 << i)
+        //  
+      }
+      x += arrowpx;
+    }
+    
     // if (occ & 1 << i) {
     //	drw_rect(drw, x + boxs, boxs, boxw, boxw,
     //	m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
     //	urg & 1 << i);
     //}
 
-    x += w;
+
   }
 
   // drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel :

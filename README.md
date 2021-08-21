@@ -57,10 +57,10 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + SHIFT + B | change status bar position |
 | MOD + [1-9]  | go to tag [1-9]  |
 | MOD + SHIFT + [1-9]  | push window to tag [1-9] |
-| MOD + J  | change stack focus by +1 |
-| MOD + K  | change stack focus by -1 |
-| MOD + SHIFT + J  | move window up by one in stack |
-| MOD + SHIFT + K  | move window down by one in stack  |
+| MOD + K  | change stack focus by +1 |
+| MOD + J  | change stack focus by -1 |
+| MOD + SHIFT + K  | move window up by one in stack |
+| MOD + SHIFT + J  | move window down by one in stack  |
 | MOD + H  | change master factor by -0.05 |
 | MOD + L  | change master factor by +0.05|
 
@@ -92,21 +92,27 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + D | floating layout |
 | MOD + X | monocle (fullscreen) layout |
 | MOD + SPACE | toggle floating mode for window |
-| MOD + N | cycle layout +1 |
-| MOD + M | cycle layout -1 |
-| MOD + CONTROL + J | increase gap between windows |
-| MOD + CONTROL + K | decrease gap between windows |
+| MOD + M | cycle layout +1 |
+| MOD + N | cycle layout -1 |
+| MOD + CONTROL + K | increase gap between windows |
+| MOD + CONTROL + J | decrease gap between windows |
 | MOD + CONTROL + N | reset gap between windows |
-| MOD + CONTROL + U | increase gap between layout and sides |
-| MOD + CONTROL + I | decrease gap between layout and sides |
+| MOD + CONTROL + I | increase gap between layout and sides |
+| MOD + CONTROL + U | decrease gap between layout and sides |
 | MOD + CONTROL + M | reset gap between layout and sides |
 
 ### Mouse controls
 | Keybinding |  Action|
 |:-----|------:|
-| L_CLICK + DRAG | move window (floating mode)|
-| R_CLICK + DRAG | resize window (floating mode) |
+| LEFT CLICK + DRAG | move window (floating mode)|
+| RIGHT CLICK + DRAG | resize window (floating mode) |
 
+### Misc keybindings
+| Keybinding |  Action|
+|:-----|------:|
+| MOD + SHIFT + P | start picom |
+| MOD + SHIFT + O  | kill picom |
+| MOD + SHIFT + L  | restart dwmblocks |
 
 ## Author
 

@@ -98,7 +98,9 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run","-m", dmenumon, "-fn", dmenufont, "-nb", col_bg_n, "-nf", col_fg_n, "-sb", col_bg_s, "-sf", col_fg_s, NULL };
-static const char *termcmd[]  = { "alacritty", NULL };
+static const char *alacrittycmd[]  = { "alacritty", NULL };
+static const char *kittycmd[]  = { "kitty", NULL };
+static const char *stcmd[]  = { "st", NULL };
 static const char *browsercmd[]  = { "firefox", NULL };
 static const char *browserpcmd[]  = { "firefox","--private-window", NULL };
 static const char *filecmd[]  = { "nemo", NULL };
@@ -107,11 +109,20 @@ static const char *rangercmd[]  = { "alacritty", "-e", "ranger", NULL };
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_Return, spawn,          {.v = alacrittycmd } },
+	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = stcmd } },
+	{ MODKEY|ControlMask,           XK_Return, spawn,          {.v = kittycmd } },
 	{ MODKEY,                       XK_w,      spawn,          {.v = browsercmd } },
 	{ MODKEY|ShiftMask,             XK_w,      spawn,          {.v = browserpcmd } },
 	{ MODKEY,                       XK_f,      spawn,          {.v = rangercmd } },
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = filecmd } },
+
+	// Picom control
+	{ MODKEY|ShiftMask,             XK_o,      spawn,          SHCMD("kill $(pidof picom)") },
+	{ MODKEY|ShiftMask,             XK_p,      spawn,          SHCMD("picom") },
+
+	// dwmblocks
+	{ MODKEY|ShiftMask,             XK_l,      spawn,          SHCMD("killall dwmblocks; notify-send -t 2000 -u low 'Restarted dwmblocks'; dwmblocks") },
 
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} }, /* kill dwm */
 	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, /* restart dwm */
@@ -190,7 +201,7 @@ static Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkStatusText,        0,              Button2,        spawn,          {.v = alacrittycmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
