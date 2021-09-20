@@ -106,6 +106,7 @@ static const char *browsercmd[]  = { "firefox", NULL };
 static const char *browserpcmd[]  = { "firefox","--private-window", NULL };
 static const char *filecmd[]  = { "nemo", NULL };
 static const char *rangercmd[]  = { "alacritty", "-e", "ranger", NULL };
+static const char *nitrogencmd[]  = { "nitrogen", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -117,6 +118,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_w,      spawn,          {.v = browserpcmd } },
 	{ MODKEY,                       XK_f,      spawn,          {.v = rangercmd } },
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = filecmd } },
+	{ MODKEY,                       XK_e,      spawn,          {.v = nitrogencmd } },
 
 	// Picom control
 	{ MODKEY|ShiftMask,             XK_o,      spawn,          SHCMD("kill $(pidof picom)") },

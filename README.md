@@ -31,6 +31,7 @@ This is my personal build of [dwm](https://dwm.suckless.org/).
 - firefox
 - ranger
 - nemo
+- nitrogen
 
 These are the packages which need to be installed on your system for the default keybindings to function properly. All bindings can easily be changed by modifying `config.h`.
 
@@ -39,13 +40,15 @@ These are the packages which need to be installed on your system for the default
 By default `MOD` refers to the `SUPER` key.
 
 ### Programs
-| Keybinding |  Action|
-|:-----|------:|
-| MOD + RETURN  | launch alacritty |
-| MOD + W  | launch firefox |
-| MOD + SHIFT + W  | launch firefox (private) |
-| MOD + F  | launch ranger |
-| MOD + SHIFT + F  | launch nemo |
+| Keybinding             |                   Action |
+|------------------------|-------------------------:|
+| MOD + RETURN           |         launch alacritty |
+| MOD + SHIFT + RETURN   |                launch st |
+| MOD + W                |           launch firefox |
+| MOD + SHIFT + W        | launch firefox (private) |
+| MOD + F                |            launch ranger |
+| MOD + SHIFT + F        |              launch nemo |
+| MOD + E                |          launch nitrogen |
 
 ### General keybindings
 | Keybinding |  Action|
