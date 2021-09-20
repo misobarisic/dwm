@@ -52,6 +52,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "--firefox", NULL,       NULL,       1 << 8,       0,           -1 },
 	{ "--Brave-browser",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "Galculator",  NULL,       NULL,       0,       1,           -1 },
 	{ "Yad",  NULL,       NULL,       0,       1,           -1 },
 	{ "discord",  NULL,       NULL,       0,       1,           -1 },
 };
@@ -150,19 +151,19 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_x,      relativemove,   {.i = +1} },
 	{ MODKEY|ShiftMask,             XK_y,      relativemove,   {.i = -1} },
 
-    // Corner controls
+        // Corner controls
 	{ MODKEY,                       XK_e,      togglecorners,  {0} },
 
-	{ MODKEY,					    XK_m,      cyclelayout,    {.i = +1 } },
-	{ MODKEY,         			    XK_n,      cyclelayout,    {.i = -1 } },
+	{ MODKEY,			XK_m,      cyclelayout,    {.i = +1 } },
+	{ MODKEY,             	        XK_n,      cyclelayout,    {.i = -1 } },
 	
-    // Inner gaps
-	{ MODKEY|ControlMask,   	    XK_k,      modifygaps,     {.i = +12} },
+        // Inner gaps
+	{ MODKEY|ControlMask,   	XK_k,      modifygaps,     {.i = +12} },
 	{ MODKEY|ControlMask,           XK_j,      modifygaps,     {.i = -12} },
 	{ MODKEY|ControlMask,           XK_n,      setgaps,        {.i = gappx} },
 
-    // Outer gaps
-	{ MODKEY|ControlMask,   	    XK_i,      modifysidegaps, {.i = +12} },
+    	// Outer gaps
+	{ MODKEY|ControlMask,   	XK_i,      modifysidegaps, {.i = +12} },
 	{ MODKEY|ControlMask,           XK_u,      modifysidegaps, {.i = -12} },
 	{ MODKEY|ControlMask,           XK_m,      setsidegaps,    {.i = sidegappx} },
 
