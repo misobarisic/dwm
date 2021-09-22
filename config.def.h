@@ -107,6 +107,7 @@ static const char *browserpcmd[]  = { "firefox","--private-window", NULL };
 static const char *filecmd[]  = { "nemo", NULL };
 static const char *rangercmd[]  = { "alacritty", "-e", "ranger", NULL };
 static const char *nitrogencmd[]  = { "nitrogen", NULL };
+static const char *officecmd[]  = { "libreoffice", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -119,6 +120,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_f,      spawn,          {.v = rangercmd } },
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = filecmd } },
 	{ MODKEY,                       XK_e,      spawn,          {.v = nitrogencmd } },
+	{ MODKEY,                       XK_r,      spawn,          {.v = officecmd } },
 
 	// Picom control
 	{ MODKEY|ShiftMask,             XK_o,      spawn,          SHCMD("kill $(pidof picom)") },
@@ -128,8 +130,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_l,      spawn,          SHCMD("killall dwmblocks; notify-send -t 2000 -u low 'Restarted dwmblocks'; dwmblocks") },
 
 	// backlight controls (acpilight)
-	{ MODKEY|ControlMask,           XK_u,      spawn,          SHCMD("xbacklight -5") },
-	{ MODKEY|ControlMask,           XK_i,      spawn,          SHCMD("xbacklight +5") },
+	{ MODKEY|ShiftMask,             XK_t,      spawn,          SHCMD("xbacklight -5") },
+	{ MODKEY|ShiftMask,             XK_z,      spawn,          SHCMD("xbacklight +5") },
 
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} }, /* kill dwm */
 	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, /* restart dwm */
