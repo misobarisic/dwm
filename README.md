@@ -116,6 +116,8 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + SHIFT + P | start picom |
 | MOD + SHIFT + O  | kill picom |
 | MOD + SHIFT + L  | restart dwmblocks |
+| MOD + CONRTOL + I  | increase backlight +5 |
+| MOD + CONRTOL + U  | increase backlight -5 |
 
 ## Author
 

@@ -12,8 +12,8 @@ static const unsigned int cornerrad = 0;		/* corner radius */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "size=10", "FontAwesome:size=11" };
-static const char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = { "size=11", "FontAwesome:size=12" };
+static const char dmenufont[]       = "monospace:size=11";
 static const char col_bg_n[]        = "#1F2937"; /* tailwind gray 800 */
 static const char col_bg_s[]        = "#3f51b5"; /* indigo 500 */
 static const char col_fg_n[]        = "#eeeeee";
@@ -42,7 +42,7 @@ static const char *colors[][3]      = {
 };
 
 /* bar height */
-static const int user_bh = 24; /* 0 means that dwm will calculate bar height */
+static const int user_bh = 28; /* 0 means that dwm will calculate bar height */
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -126,6 +126,10 @@ static Key keys[] = {
 
 	// dwmblocks
 	{ MODKEY|ShiftMask,             XK_l,      spawn,          SHCMD("killall dwmblocks; notify-send -t 2000 -u low 'Restarted dwmblocks'; dwmblocks") },
+
+	// backlight controls (acpilight)
+	{ MODKEY|ControlMask,           XK_u,      spawn,          SHCMD("xbacklight -5") },
+	{ MODKEY|ControlMask,           XK_i,      spawn,          SHCMD("xbacklight +5") },
 
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} }, /* kill dwm */
 	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, /* restart dwm */
