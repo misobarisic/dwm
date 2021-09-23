@@ -49,6 +49,8 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + F                |            launch ranger |
 | MOD + SHIFT + F        |              launch nemo |
 | MOD + E                |          launch nitrogen |
+| MOD + R                |          launch libreoffice |
+| MOD + G                |          launch gimp |
 
 ### General keybindings
 | Keybinding |  Action|
@@ -113,6 +115,8 @@ By default `MOD` refers to the `SUPER` key.
 ### Misc keybindings
 | Keybinding |  Action|
 |:-----|------:|
+| PRINT SCREEN | launch flameshot gui |
+| MOD + PRINT SCREEN | capture full screenshot |
 | MOD + SHIFT + P | start picom |
 | MOD + SHIFT + O  | kill picom |
 | MOD + SHIFT + L  | restart dwmblocks |

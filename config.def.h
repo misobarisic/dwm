@@ -93,6 +93,8 @@ static const Layout layouts[] = {
 	/*{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} }, */
 	
+#define Prnt	    0x0000ff61
+
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
@@ -100,6 +102,8 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run","-m", dmenumon, "-fn", dmenufont, "-nb", col_bg_n, "-nf", col_fg_n, "-sb", col_bg_s, "-sf", col_fg_s, NULL };
 static const char *alacrittycmd[]  = { "alacritty", NULL };
+static const char *flameshotgui[]  = { "flameshot", "gui", NULL };
+static const char *flameshotfull[]  = { "flameshot", "full", "-p", "/home/mb/", NULL };
 static const char *kittycmd[]  = { "kitty", NULL };
 static const char *stcmd[]  = { "st", NULL };
 static const char *browsercmd[]  = { "firefox", NULL };
@@ -108,6 +112,7 @@ static const char *filecmd[]  = { "nemo", NULL };
 static const char *rangercmd[]  = { "alacritty", "-e", "ranger", NULL };
 static const char *nitrogencmd[]  = { "nitrogen", NULL };
 static const char *officecmd[]  = { "libreoffice", NULL };
+static const char *gimpcmd[]  = { "gimp", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -121,6 +126,11 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = filecmd } },
 	{ MODKEY,                       XK_e,      spawn,          {.v = nitrogencmd } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = officecmd } },
+	{ MODKEY,                       XK_g,      spawn,          {.v = gimpcmd } },
+
+	// Flameshot
+	{ 0,                            Prnt,      spawn,          {.v = flameshotgui } },
+	{ MODKEY,                       Prnt,      spawn,          {.v = flameshotfull } },
 
 	// Picom control
 	{ MODKEY|ShiftMask,             XK_o,      spawn,          SHCMD("kill $(pidof picom)") },
