@@ -113,6 +113,7 @@ static const char *rangercmd[]  = { "alacritty", "-e", "ranger", NULL };
 static const char *nitrogencmd[]  = { "nitrogen", NULL };
 static const char *officecmd[]  = { "libreoffice", NULL };
 static const char *gimpcmd[]  = { "gimp", NULL };
+static const char *emailcmd[]  = { "thunderbird", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -124,9 +125,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_w,      spawn,          {.v = browserpcmd } },
 	{ MODKEY,                       XK_f,      spawn,          {.v = rangercmd } },
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = filecmd } },
-	{ MODKEY,                       XK_e,      spawn,          {.v = nitrogencmd } },
+	{ MODKEY,                       XK_e,      spawn,          {.v = emailcmd } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = officecmd } },
 	{ MODKEY,                       XK_g,      spawn,          {.v = gimpcmd } },
+	{ MODKEY,                       XK_t,      spawn,          {.v = nitrogencmd } },
 
 	// Flameshot
 	{ 0,                            Prnt,      spawn,          {.v = flameshotgui } },
@@ -170,7 +172,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_y,      relativemove,   {.i = -1} },
 
         // Corner controls
-	{ MODKEY,                       XK_e,      togglecorners,  {0} },
+	{ MODKEY|ShiftMask,             XK_e,      togglecorners,  {0} },
 
 	{ MODKEY,			XK_m,      cyclelayout,    {.i = +1 } },
 	{ MODKEY,             	        XK_n,      cyclelayout,    {.i = -1 } },

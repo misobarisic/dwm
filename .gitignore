@@ -2,3 +2,4 @@ config.h
 tags.h
 dwm
 *.o
+.idea/

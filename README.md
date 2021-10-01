@@ -32,6 +32,7 @@ This is my personal build of [dwm](https://dwm.suckless.org/).
 - ranger
 - nemo
 - nitrogen
+- more (located in my dotfiles repo)
 
 These are the packages which need to be installed on your system for the default keybindings to function properly. All bindings can easily be changed by modifying `config.h`.
 
@@ -48,9 +49,10 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + SHIFT + W        | launch firefox (private) |
 | MOD + F                |            launch ranger |
 | MOD + SHIFT + F        |              launch nemo |
-| MOD + E                |          launch nitrogen |
+| MOD + E                |          launch thunderbird |
 | MOD + R                |          launch libreoffice |
 | MOD + G                |          launch gimp |
+| MOD + T                |          launch nitrogen |
 
 ### General keybindings
 | Keybinding |  Action|
@@ -92,7 +94,7 @@ By default `MOD` refers to the `SUPER` key.
 ### Layout keybindings
 | Keybinding |  Action|
 |:-----|------:|
-| MOD + E | toggle rounded corners |
+| MOD + SHIFT + E | toggle rounded corners |
 | MOD + C | tiling layout |
 | MOD + D | floating layout |
 | MOD + X | monocle (fullscreen) layout |
