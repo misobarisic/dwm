@@ -47,6 +47,7 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + SHIFT + RETURN   |                launch st |
 | MOD + W                |           launch firefox |
 | MOD + SHIFT + W        | launch firefox (private) |
+| MOD + CONTROL + W      |             launch brave |
 | MOD + F                |            launch ranger |
 | MOD + SHIFT + F        |              launch nemo |
 | MOD + E                |          launch thunderbird |

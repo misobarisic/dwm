@@ -12,8 +12,8 @@ static const unsigned int cornerrad = 0;		/* corner radius */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "size=11", "FontAwesome:size=12" };
-static const char dmenufont[]       = "monospace:size=11";
+static const char *fonts[]          = { "monospace:size=12", "FontAwesome:size=12" };
+static const char dmenufont[]       = "monospace:size=12";
 static const char col_bg_n[]        = "#1F2937"; /* tailwind gray 800 */
 static const char col_bg_s[]        = "#3f51b5"; /* indigo 500 */
 static const char col_fg_n[]        = "#eeeeee";
@@ -54,7 +54,9 @@ static const Rule rules[] = {
 	{ "--Brave-browser",  NULL,       NULL,       1 << 8,       0,           -1 },
 	{ "Galculator",  NULL,       NULL,       0,       1,           -1 },
 	{ "Yad",  NULL,       NULL,       0,       1,           -1 },
-	{ "discord",  NULL,       NULL,       0,       1,           -1 },
+	{ "discord",  NULL,       NULL,       1 << 5,       1,           -1 },
+	{ "Spotify",  NULL,       NULL,       1 << 6,       0,           -1 },
+	{ "Steam",  NULL,       NULL,       1 << 7,       0,           -1 },
 };
 
 /* layout(s) */
@@ -103,11 +105,12 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run","-m", dmenumon, "-fn", dmenufont, "-nb", col_bg_n, "-nf", col_fg_n, "-sb", col_bg_s, "-sf", col_fg_s, NULL };
 static const char *alacrittycmd[]  = { "alacritty", NULL };
 static const char *flameshotgui[]  = { "flameshot", "gui", NULL };
-static const char *flameshotfull[]  = { "flameshot", "full", "-p", "/home/mb/", NULL };
+static const char *flameshotfull[]  = { "flameshot", "full", "-p", "/home/mb/Screenshots/", NULL };
 static const char *kittycmd[]  = { "kitty", NULL };
 static const char *stcmd[]  = { "st", NULL };
 static const char *browsercmd[]  = { "firefox", NULL };
 static const char *browserpcmd[]  = { "firefox","--private-window", NULL };
+static const char *browseraltcmd[]  = { "brave", NULL };
 static const char *filecmd[]  = { "nemo", NULL };
 static const char *rangercmd[]  = { "alacritty", "-e", "ranger", NULL };
 static const char *nitrogencmd[]  = { "nitrogen", NULL };
@@ -123,6 +126,7 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           XK_Return, spawn,          {.v = kittycmd } },
 	{ MODKEY,                       XK_w,      spawn,          {.v = browsercmd } },
 	{ MODKEY|ShiftMask,             XK_w,      spawn,          {.v = browserpcmd } },
+	{ MODKEY|ControlMask,           XK_w,      spawn,          {.v = browseraltcmd } },
 	{ MODKEY,                       XK_f,      spawn,          {.v = rangercmd } },
 	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = filecmd } },
 	{ MODKEY,                       XK_e,      spawn,          {.v = emailcmd } },
