@@ -5,14 +5,14 @@
 /* appearance */
 static const unsigned int arrowpx   = 12;       /* arrow size in px */
 static const unsigned int s_arrowpx = 12;       /* arrow size in px */
-static const unsigned int borderpx  = 2;        /* border pixel of windows */
-static const unsigned int gappx     = 2;        /* gap pixel between windows */
+static const unsigned int borderpx  = 0;        /* border pixel of windows */
+static const unsigned int gappx     = 4;        /* gap pixel between windows */
 static const unsigned int sidegappx = 8;        /* gap pixel between layout and sides */
-static const unsigned int cornerrad = 0;		/* corner radius */
+static const unsigned int cornerrad = 0;	/* corner radius */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=12", "FontAwesome:size=12" };
+static const char *fonts[]          = { "monospace:size=11", "FontAwesome:size=12" };
 static const char dmenufont[]       = "monospace:size=12";
 static const char col_bg_n[]        = "#1F2937"; /* tailwind gray 800 */
 static const char col_bg_s[]        = "#3f51b5"; /* indigo 500 */
@@ -54,7 +54,7 @@ static const Rule rules[] = {
 	{ "--Brave-browser",  NULL,       NULL,       1 << 8,       0,           -1 },
 	{ "Galculator",  NULL,       NULL,       0,       1,           -1 },
 	{ "Yad",  NULL,       NULL,       0,       1,           -1 },
-	{ "discord",  NULL,       NULL,       1 << 5,       1,           -1 },
+	{ "discord",  NULL,       NULL,       1 << 5,       0,           -1 },
 	{ "Spotify",  NULL,       NULL,       1 << 6,       0,           -1 },
 	{ "Steam",  NULL,       NULL,       1 << 7,       0,           -1 },
 };
@@ -102,7 +102,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run","-m", dmenumon, "-fn", dmenufont, "-nb", col_bg_n, "-nf", col_fg_n, "-sb", col_bg_s, "-sf", col_fg_s, NULL };
+static const char *dmenucmd[] = { "dmenu_run","-p", "Run:","-m", dmenumon, "-fn", dmenufont, "-nb", col_bg_n, "-nf", col_fg_n, "-sb", col_bg_s, "-sf", col_fg_s, NULL };
 static const char *alacrittycmd[]  = { "alacritty", NULL };
 static const char *flameshotgui[]  = { "flameshot", "gui", NULL };
 static const char *flameshotfull[]  = { "flameshot", "full", "-p", "/home/mb/Screenshots/", NULL };
@@ -204,10 +204,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	// { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	// { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	// { MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	// { MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	// { MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	// { MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
+	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -216,7 +216,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_6,                      5)
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
-	//TAGKEYS(                        XK_9,                      8)
+	TAGKEYS(                        XK_9,                      8)
 	};
 
 /* button definitions */

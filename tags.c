@@ -11,7 +11,7 @@ void relativemove(const Arg *arg) {
 
 void relativeview(const Arg *arg) {
   int i;
-	unsigned int tmptag;
+  unsigned int tmptag;
 
   int newmon = selmon->selectedtag + arg->i;
   if (newmon < 0 || newmon > LENGTH(tags) - 1)
@@ -52,7 +52,7 @@ void relativeview(const Arg *arg) {
 
 void relativemoveview(const Arg *arg) {
   int i;
-	unsigned int tmptag;
+  unsigned int tmptag;
 
   if (selmon->sel && arg->i) {
     int endtag = selmon->selectedtag + arg->i;
