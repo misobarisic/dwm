@@ -1,6 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 #include <X11/X.h>
+#include <X11/XF86keysym.h>
 
 /* appearance */
 static const unsigned int arrowpx   = 12;       /* arrow size in px */
@@ -148,6 +149,8 @@ static Key keys[] = {
 	// backlight controls (acpilight)
 	{ MODKEY|ShiftMask,             XK_t,      spawn,          SHCMD("xbacklight -5") },
 	{ MODKEY|ShiftMask,             XK_z,      spawn,          SHCMD("xbacklight +5") },
+	{ 0,                            XF86XK_MonBrightnessDown,  spawn,          SHCMD("xbacklight -5") },
+	{ 0,             		XF86XK_MonBrightnessUp,    spawn,          SHCMD("xbacklight +5") },
 
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} }, /* kill dwm */
 	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, /* restart dwm */
@@ -160,6 +163,9 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_i,      increaseVolume, {0} },
 	{ MODKEY|ShiftMask,             XK_u,      decreaseVolume, {0} },
 	{ MODKEY|ShiftMask,             XK_m,      muteVolume,     {0} },
+	{ 0,             XF86XK_AudioRaiseVolume,  increaseVolume, {0} },
+	{ 0,             XF86XK_AudioLowerVolume,  decreaseVolume, {0} },
+	{ 0,             XF86XK_AudioMute,         muteVolume,     {0} },
 
 	// Stack controls
 	{ MODKEY,                       XK_k,      focusstack,     {.i = +1 } }, 
