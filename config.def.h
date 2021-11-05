@@ -104,6 +104,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run","-p", "Run:","-m", dmenumon, "-fn", dmenufont, "-nb", col_bg_n, "-nf", col_fg_n, "-sb", col_bg_s, "-sf", col_fg_s, NULL };
+static const char *roficmd[]  = { "rofi_mb", NULL };
 static const char *alacrittycmd[]  = { "alacritty", NULL };
 static const char *flameshotgui[]  = { "flameshot", "gui", NULL };
 static const char *flameshotfull[]  = { "flameshot", "full", "-p", "/home/mb/Screenshots/", NULL };
@@ -122,6 +123,7 @@ static const char *emailcmd[]  = { "thunderbird", NULL };
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_o,      spawn,          {.v = roficmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = alacrittycmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = stcmd } },
 	{ MODKEY|ControlMask,           XK_Return, spawn,          {.v = kittycmd } },
