@@ -8,7 +8,7 @@ static const unsigned int arrowpx   = 12;       /* arrow size in px */
 static const unsigned int s_arrowpx = 12;       /* arrow size in px */
 static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int gappx     = 4;        /* gap pixel between windows */
-static const unsigned int sidegappx = 8;        /* gap pixel between layout and sides */
+static const unsigned int sidegappx = 12;        /* gap pixel between layout and sides */
 static const unsigned int cornerrad = 0;	/* corner radius */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
@@ -104,7 +104,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run","-p", "Run:","-m", dmenumon, "-fn", dmenufont, "-nb", col_bg_n, "-nf", col_fg_n, "-sb", col_bg_s, "-sf", col_fg_s, NULL };
-static const char *roficmd[]  = { "rofi_mb", NULL };
+static const char *roficmd[]  = { "/home/mb/.bin/rofi_mb", NULL };
 static const char *alacrittycmd[]  = { "alacritty", NULL };
 static const char *flameshotgui[]  = { "flameshot", "gui", NULL };
 static const char *flameshotfull[]  = { "flameshot", "full", "-p", "/home/mb/Screenshots/", NULL };
@@ -119,6 +119,10 @@ static const char *nitrogencmd[]  = { "nitrogen", NULL };
 static const char *officecmd[]  = { "libreoffice", NULL };
 static const char *gimpcmd[]  = { "gimp", NULL };
 static const char *emailcmd[]  = { "thunderbird", NULL };
+static const char *togglepicom[] = { "/bin/bash", "-c", "picomid=$(pidof picom); if [ -z $picomid ]; then picom -b; else kill $picomid; fi", NULL };
+static const char *brightup[] = { "xbacklight +5", NULL };
+static const char *brightdown[] = { "xbacklight -5", NULL };
+static const char *blocksrestart[] = { "killall dwmblocks; notify-send -t 2000 -u low 'Restarted dwmblocks'; dwmblocks" , NULL};
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -142,17 +146,16 @@ static Key keys[] = {
 	{ MODKEY,                       Prnt,      spawn,          {.v = flameshotfull } },
 
 	// Picom control
-	{ MODKEY|ShiftMask,             XK_o,      spawn,          SHCMD("kill $(pidof picom)") },
-	{ MODKEY|ShiftMask,             XK_p,      spawn,          SHCMD("picom") },
+	{ MODKEY|ShiftMask,             XK_p,      spawn,          {.v = togglepicom } },
 
 	// dwmblocks
-	{ MODKEY|ShiftMask,             XK_l,      spawn,          SHCMD("killall dwmblocks; notify-send -t 2000 -u low 'Restarted dwmblocks'; dwmblocks") },
+	{ MODKEY|ShiftMask,             XK_l,      spawn,          {.v = blocksrestart } },
 
 	// backlight controls (acpilight)
-	{ MODKEY|ShiftMask,             XK_t,      spawn,          SHCMD("xbacklight -5") },
-	{ MODKEY|ShiftMask,             XK_z,      spawn,          SHCMD("xbacklight +5") },
-	{ 0,                            XF86XK_MonBrightnessDown,  spawn,          SHCMD("xbacklight -5") },
-	{ 0,             		XF86XK_MonBrightnessUp,    spawn,          SHCMD("xbacklight +5") },
+	{ MODKEY|ShiftMask,             XK_t,      spawn,          {.v = brightdown } },
+	{ MODKEY|ShiftMask,             XK_z,      spawn,          {.v = brightup } },
+	{ 0,        XF86XK_MonBrightnessDown,      spawn,          {.v = brightdown } },
+	{ 0,          XF86XK_MonBrightnessUp,      spawn,          {.v = brightup } },
 
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} }, /* kill dwm */
 	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, /* restart dwm */
@@ -160,14 +163,14 @@ static Key keys[] = {
 	{ MODKEY,                       XK_q,      killclient,     {0} }, // Close window
 	{ MODKEY,                       XK_b,      togglebar,      {0} }, // Switch bar on/off
 	{ MODKEY|ShiftMask,             XK_b,      changebarpos,   {0} }, // Move between up and down
-
+s
 	// Volume controls
 	{ MODKEY|ShiftMask,             XK_i,      increaseVolume, {0} },
 	{ MODKEY|ShiftMask,             XK_u,      decreaseVolume, {0} },
 	{ MODKEY|ShiftMask,             XK_m,      muteVolume,     {0} },
-	{ 0,             XF86XK_AudioRaiseVolume,  increaseVolume, {0} },
-	{ 0,             XF86XK_AudioLowerVolume,  decreaseVolume, {0} },
-	{ 0,             XF86XK_AudioMute,         muteVolume,     {0} },
+	{ 0,         XF86XK_AudioRaiseVolume,      increaseVolume, {0} },
+	{ 0,         XF86XK_AudioLowerVolume,      decreaseVolume, {0} },
+	{ 0,                XF86XK_AudioMute,      muteVolume,     {0} },
 
 	// Stack controls
 	{ MODKEY,                       XK_k,      focusstack,     {.i = +1 } }, 
@@ -183,19 +186,19 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_x,      relativemove,   {.i = +1} },
 	{ MODKEY|ShiftMask,             XK_y,      relativemove,   {.i = -1} },
 
-        // Corner controls
+    // Corner controls
 	{ MODKEY|ShiftMask,             XK_e,      togglecorners,  {0} },
 
-	{ MODKEY,			XK_m,      cyclelayout,    {.i = +1 } },
-	{ MODKEY,             	        XK_n,      cyclelayout,    {.i = -1 } },
+	{ MODKEY,			            XK_m,      cyclelayout,    {.i = +1 } },
+	{ MODKEY,                       XK_n,      cyclelayout,    {.i = -1 } },
 	
-        // Inner gaps
-	{ MODKEY|ControlMask,   	XK_k,      modifygaps,     {.i = +12} },
+    // Inner gaps
+	{ MODKEY|ControlMask,   	    XK_k,      modifygaps,     {.i = +12} },
 	{ MODKEY|ControlMask,           XK_j,      modifygaps,     {.i = -12} },
 	{ MODKEY|ControlMask,           XK_n,      setgaps,        {.i = gappx} },
 
-    	// Outer gaps
-	{ MODKEY|ControlMask,   	XK_i,      modifysidegaps, {.i = +12} },
+    // Outer gaps
+	{ MODKEY|ControlMask,        	XK_i,      modifysidegaps, {.i = +12} },
 	{ MODKEY|ControlMask,           XK_u,      modifysidegaps, {.i = -12} },
 	{ MODKEY|ControlMask,           XK_m,      setsidegaps,    {.i = sidegappx} },
 
