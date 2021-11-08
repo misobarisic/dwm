@@ -120,8 +120,8 @@ static const char *officecmd[]  = { "libreoffice", NULL };
 static const char *gimpcmd[]  = { "gimp", NULL };
 static const char *emailcmd[]  = { "thunderbird", NULL };
 static const char *togglepicom[] = { "/bin/bash", "-c", "picomid=$(pidof picom); if [ -z $picomid ]; then picom -b; else kill $picomid; fi", NULL };
-static const char *brightup[] = { "xbacklight +5", NULL };
-static const char *brightdown[] = { "xbacklight -5", NULL };
+static const char *brightup[] = { "xbacklight", "+5", NULL };
+static const char *brightdown[] = { "xbacklight", "-5", NULL };
 static const char *blocksrestart[] = { "killall dwmblocks; notify-send -t 2000 -u low 'Restarted dwmblocks'; dwmblocks" , NULL};
 
 static Key keys[] = {
@@ -163,7 +163,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_q,      killclient,     {0} }, // Close window
 	{ MODKEY,                       XK_b,      togglebar,      {0} }, // Switch bar on/off
 	{ MODKEY|ShiftMask,             XK_b,      changebarpos,   {0} }, // Move between up and down
-s
+
 	// Volume controls
 	{ MODKEY|ShiftMask,             XK_i,      increaseVolume, {0} },
 	{ MODKEY|ShiftMask,             XK_u,      decreaseVolume, {0} },
