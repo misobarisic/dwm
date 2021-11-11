@@ -82,10 +82,10 @@ void roundcorners(Client *c) {
 void togglecorners(const Arg *arg) {
   if (selmon->cornerrad > 0) {
     selmon->cornerrad = 0;
-    //selmon->borderpx = 0;
+    selmon->borderpx = 0;
   } else {
     selmon->cornerrad = cornerrad;
-    //selmon->borderpx = borderpx;
+    selmon->borderpx = borderpx;
   }
   arrange(selmon);
 }

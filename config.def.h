@@ -67,6 +67,7 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
 #include "barpos.c"
+#include "brightness.c"
 #include "corners.c"
 #include "fibonacci.c"
 #include "gaps.c"
@@ -120,8 +121,6 @@ static const char *officecmd[]  = { "libreoffice", NULL };
 static const char *gimpcmd[]  = { "gimp", NULL };
 static const char *emailcmd[]  = { "thunderbird", NULL };
 static const char *togglepicom[] = { "/bin/bash", "-c", "picomid=$(pidof picom); if [ -z $picomid ]; then picom -b; else kill $picomid; fi", NULL };
-static const char *brightup[] = { "xbacklight", "+5", NULL };
-static const char *brightdown[] = { "xbacklight", "-5", NULL };
 static const char *blocksrestart[] = { "killall dwmblocks; notify-send -t 2000 -u low 'Restarted dwmblocks'; dwmblocks" , NULL};
 
 static Key keys[] = {
@@ -129,6 +128,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_o,      spawn,          {.v = roficmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = alacrittycmd } },
+	{ MODKEY,                       XK_t,      spawn,          {.v = alacrittycmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = stcmd } },
 	{ MODKEY|ControlMask,           XK_Return, spawn,          {.v = kittycmd } },
 	{ MODKEY,                       XK_w,      spawn,          {.v = browsercmd } },
@@ -139,7 +139,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_e,      spawn,          {.v = emailcmd } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = officecmd } },
 	{ MODKEY,                       XK_g,      spawn,          {.v = gimpcmd } },
-	{ MODKEY,                       XK_t,      spawn,          {.v = nitrogencmd } },
+	{ MODKEY,                       XK_v,      spawn,          {.v = nitrogencmd } },
 
 	// Flameshot
 	{ 0,                            Prnt,      spawn,          {.v = flameshotgui } },
@@ -152,10 +152,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_l,      spawn,          {.v = blocksrestart } },
 
 	// backlight controls (acpilight)
-	{ MODKEY|ShiftMask,             XK_t,      spawn,          {.v = brightdown } },
-	{ MODKEY|ShiftMask,             XK_z,      spawn,          {.v = brightup } },
-	{ 0,        XF86XK_MonBrightnessDown,      spawn,          {.v = brightdown } },
-	{ 0,          XF86XK_MonBrightnessUp,      spawn,          {.v = brightup } },
+	{ MODKEY|ShiftMask,             XK_t,      brightDown,     {0} },
+	{ MODKEY|ShiftMask,             XK_z,      brightUp,       {0} },
+	{ 0,        XF86XK_MonBrightnessDown,      brightDown,     {0} },
+	{ 0,          XF86XK_MonBrightnessUp,      brightUp,       {0} },
 
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} }, /* kill dwm */
 	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, /* restart dwm */
@@ -186,10 +186,11 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_x,      relativemove,   {.i = +1} },
 	{ MODKEY|ShiftMask,             XK_y,      relativemove,   {.i = -1} },
 
-    // Corner controls
+    	// Corner controls
 	{ MODKEY|ShiftMask,             XK_e,      togglecorners,  {0} },
 
-	{ MODKEY,			            XK_m,      cyclelayout,    {.i = +1 } },
+	// Cycle layout
+	{ MODKEY,		        XK_m,      cyclelayout,    {.i = +1 } },
 	{ MODKEY,                       XK_n,      cyclelayout,    {.i = -1 } },
 	
     // Inner gaps
