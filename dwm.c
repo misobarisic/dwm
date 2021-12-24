@@ -991,7 +991,7 @@ void drawbar(Monitor *m) {
         drw_setscheme(drw, scheme[ArrowNorm]);
         drw_arrow(drw, x, 0, arrowpx, bh, 1, 0);
     } else {
-        drw_setscheme(drw, scheme[occ & 1 << i ? ArrowActive : ArrowBg]);
+        drw_setscheme(drw, scheme[occ & 1 << (LENGTH(tags) - 1) ? ArrowActive : ArrowBg]);
         drw_arrow(drw, x, 0, arrowpx, bh, 1, 0);
     }
     x += arrowpx;
