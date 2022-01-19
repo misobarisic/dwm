@@ -43,8 +43,8 @@ By default `MOD` refers to the `SUPER` key.
 ### Programs
 | Keybinding             |                   Action |
 |------------------------|-------------------------:|
-| MOD + RETURN           |         launch dmenu |
-| MOD + RETURN           |         launch rofi |
+| MOD + P           |         launch dmenu |
+| MOD + O           |         launch rofi |
 | MOD + RETURN           |         launch alacritty |
 | MOD + SHIFT + RETURN   |                launch st |
 | MOD + W                |           launch firefox |
