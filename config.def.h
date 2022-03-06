@@ -90,6 +90,7 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
+#define ALTKEY Mod1Mask
 #define MODKEY Mod4Mask
 #define TAGKEYS(KEY, TAG) \
     { MODKEY,                       KEY,      view,           {.ui = TAG} }, \
@@ -109,6 +110,7 @@ static const char *dmenucmd[] = {"dmenu_run", "-p", "Run:", "-m", dmenumon, "-fn
                                  col_fg_n, "-sb", col_bg_s, "-sf", col_fg_s, NULL};
 static const char *roficmd[] = {"/home/mb/.bin/rofi_mb", NULL};
 static const char *notflixcmd[] = {"notflix", NULL};
+static const char *bwcmd[] = {"bwmenu", "-c", "15", NULL};
 static const char *alacrittycmd[] = {"alacritty", NULL};
 static const char *flameshotgui[] = {"flameshot", "gui", NULL};
 static const char *flameshotfull[] = {"flameshot", "full", "-p", "/home/mb/Screenshots/", NULL};
@@ -120,6 +122,7 @@ static const char *browseraltcmd[] = {"brave", NULL};
 static const char *filecmd[] = {"nemo", NULL};
 static const char *rangercmd[] = {"alacritty", "-e", "ranger", NULL};
 static const char *nitrogencmd[] = {"nitrogen", NULL};
+static const char *volumecmd[] = {"pavucontrol", NULL};
 static const char *officecmd[] = {"libreoffice", NULL};
 static const char *gimpcmd[] = {"gimp", NULL};
 static const char *emailcmd[] = {"thunderbird", NULL};
@@ -132,7 +135,8 @@ static const char *blocksrestart[] = {"killall dwmblocks; notify-send -t 2000 -u
 static Key keys[] = {
         /* modifier                            key        function        argument */
         {MODKEY, XK_p, spawn, {.v = dmenucmd}},
-        {MODKEY, XK_i, spawn, {.v = notflixcmd}},
+        {MODKEY, XK_i, spawn, {.v = bwcmd}},
+        {MODKEY, XK_u, spawn, {.v = notflixcmd}},
         {MODKEY, XK_o, spawn, {.v = roficmd}},
         {MODKEY, XK_Return, spawn, {.v = alacrittycmd}},
         {MODKEY, XK_t, spawn, {.v = alacrittycmd}},
@@ -146,11 +150,13 @@ static Key keys[] = {
         {MODKEY, XK_e, spawn, {.v = emailcmd}},
         {MODKEY, XK_r, spawn, {.v = officecmd}},
         {MODKEY, XK_g, spawn, {.v = gimpcmd}},
-        {MODKEY, XK_v, spawn, {.v = nitrogencmd}},
+        {MODKEY, XK_v, spawn, {.v = volumecmd}},
+        {MODKEY | ShiftMask, XK_v, spawn, {.v = nitrogencmd}},
 
         // Flameshot
         {0, Prnt, spawn, {.v = flameshotgui}},
         {MODKEY, Prnt, spawn, {.v = flameshotfull}},
+        {ALTKEY, XK_s, spawn, {.v = flameshotfull}},
 
         // Picom control
         {MODKEY | ShiftMask, XK_p, spawn, {.v = togglepicom}},
