@@ -43,8 +43,9 @@ By default `MOD` refers to the `SUPER` key.
 ### Programs
 | Keybinding             |                   Action |
 |------------------------|-------------------------:|
-| MOD + P           |         launch dmenu |
-| MOD + O           |         launch rofi |
+| MOD + P                |         launch dmenu |
+| MOD + O                |         launch rofi |
+| MOD + T                |         launch alacritty |
 | MOD + RETURN           |         launch alacritty |
 | MOD + SHIFT + RETURN   |                launch st |
 | MOD + W                |           launch firefox |
@@ -55,7 +56,8 @@ By default `MOD` refers to the `SUPER` key.
 | MOD + E                |          launch thunderbird |
 | MOD + R                |          launch libreoffice |
 | MOD + G                |          launch gimp |
-| MOD + T                |          launch nitrogen |
+| MOD + V                |          launch pavucontrol |
+| MOD + SHIFT + V        |          launch nitrogen |
 
 ### General keybindings
 | Keybinding |  Action|
