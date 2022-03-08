@@ -126,7 +126,7 @@ static const char *volumecmd[] = {"pavucontrol", NULL};
 static const char *officecmd[] = {"libreoffice", NULL};
 static const char *gimpcmd[] = {"gimp", NULL};
 static const char *emailcmd[] = {"thunderbird", NULL};
-static const char *togglepicom[] = {"/bin/bash", "-c",
+static const char *togglepicom[] = {"/bin/sh", "-c",
                                     "picomid=$(pidof picom); if [ -z $picomid ]; then picom -b; else kill $picomid; fi",
                                     NULL};
 static const char *blocksrestart[] = {"killall dwmblocks; notify-send -t 2000 -u low 'Restarted dwmblocks'; dwmblocks",
