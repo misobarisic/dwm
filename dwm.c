@@ -85,7 +85,8 @@ enum {
     ArrowBg,
     ArrowActive,
     ArrowActiveAlt,
-    ArrowFullActive
+    ArrowFullActive,
+    DynamicScheme
 }; /* color schemes */
 enum {
     NetSupported,
@@ -277,6 +278,8 @@ static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 
 static void killclient(const Arg *arg);
+
+static void makeDynamicScheme(Clr fg, Clr bg, Clr border);
 
 static void manage(Window w, XWindowAttributes *wa);
 
@@ -916,7 +919,7 @@ void drawbar(Monitor *m) {
         while (token != NULL) {
             if (count % 2 != 0) {
                 drw_setscheme(drw, scheme[ArrowNorm]);
-                drw_arrow(drw, sx, 0, s_arrowpx, bh, 0, 0);
+                drw_arrow(drw, sx, 0, s_arrowpx, bh, 0, USE_SLASH_STATUS);
                 sx += s_arrowpx;
 
                 drw_setscheme(drw, scheme[ArrowSelWhite]);
@@ -926,7 +929,7 @@ void drawbar(Monitor *m) {
                 drw_setscheme(
                         drw,
                         scheme[m->sel->name != NULL && count == 0 ? ArrowNorm : ArrowBg]);
-                drw_arrow(drw, sx, 0, s_arrowpx, bh, count == 0 ? 1 : 0, 0);
+                drw_arrow(drw, sx, 0, s_arrowpx, bh, count == 0 ? 1 : 0, USE_SLASH_STATUS);
                 sx += s_arrowpx;
 
                 drw_setscheme(drw, scheme[SchemeStatus]);
@@ -952,25 +955,25 @@ void drawbar(Monitor *m) {
         if (i > 0) {
             if (m->tagset[m->seltags] & 1 << i) {
                 drw_setscheme(drw, scheme[occ & 1 << (i - 1) ? ArrowSelAlt : ArrowSel]);
-                drw_arrow(drw, x, 0, arrowpx, bh, 1, 0);
+                drw_arrow(drw, x, 0, arrowpx, bh, 1, USE_SLASH_TAGS);
             } else if (m->tagset[m->seltags] & 1 << (i - 1)) {
                 drw_setscheme(drw, scheme[occ & 1 << i ? ArrowNormAlt : ArrowNorm]);
-                drw_arrow(drw, x, 0, arrowpx, bh, 1, 0);
+                drw_arrow(drw, x, 0, arrowpx, bh, 1, USE_SLASH_TAGS);
             } else {
                 if (occ & 1 << i)
-                    if ((occ & 1 << i) && (occ & 1 << (i - 1)))
+                    if (occ & 1 << i && (occ & 1 << (i - 1)))
                         drw_setscheme(drw, scheme[ArrowFullActive]);
                     else
                         drw_setscheme(drw, scheme[ArrowActiveAlt]);
                 else {
-                    if ((occ & 1 << i) && (occ & 1 << (i - 1)))
+                    if (occ & 1 << i && (occ & 1 << (i - 1)))
                         drw_setscheme(drw, scheme[ArrowFullActive]);
                     else if (occ & 1 << (i - 1))
                         drw_setscheme(drw, scheme[ArrowActive]);
                     else
                         drw_setscheme(drw, scheme[ArrowBg]);;
                 }
-                drw_arrow(drw, x, 0, arrowpx, bh, 1, 0);
+                drw_arrow(drw, x, 0, arrowpx, bh, 1, USE_SLASH_TAGS);
             }
             x += arrowpx;
         }
@@ -989,23 +992,42 @@ void drawbar(Monitor *m) {
     // Arrow after the last shown tag
     if (m->tagset[m->seltags] & 1 << (LENGTH(tags) - 1)) {
         drw_setscheme(drw, scheme[ArrowNorm]);
-        drw_arrow(drw, x, 0, arrowpx, bh, 1, 0);
+        drw_arrow(drw, x, 0, arrowpx, bh, 1, USE_SLASH_TAGS);
     } else {
         drw_setscheme(drw, scheme[occ & 1 << (LENGTH(tags) - 1) ? ArrowActive : ArrowBg]);
-        drw_arrow(drw, x, 0, arrowpx, bh, 1, 0);
+        drw_arrow(drw, x, 0, arrowpx, bh, 1, USE_SLASH_TAGS);
     }
     x += arrowpx;
     w = blw = TEXTW(m->ltsymbol);
     drw_setscheme(drw, scheme[SchemeNorm]);
     x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
+    // Window name
     if ((w = m->ww - tw - x) > bh) {
         if (m->sel) {
+            // Arrow before window name
+            Clr tmp[] = {scheme[ArrowNorm][1], scheme[ArrowNorm][0], scheme[ArrowNorm][1]};
+            drw_setscheme(drw, tmp);
+            drw_arrow(drw, x, 0, s_arrowpx, bh, 1, USE_SLASH_STATUS);
+            x += arrowpx;
+
             drw_setscheme(drw, scheme[m == selmon ? SchemeInfoSel : SchemeInfoNorm]);
-            drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
+
+#ifdef CENTER_WINDOW_NAME
+            /* fix overflow when window name is bigger than window width */
+            int mid = (m->ww - (int) TEXTW(m->sel->name)) / 2 - x;
+            /* make sure name will not overlap on tags even when it is very long */
+            mid = mid >= lrpad / 2 ? mid : lrpad / 2;
+            x = drw_text(drw, x, 0, w-s_arrowpx, bh, mid, m->sel->name, 0);
+#else
+            x = drw_text(drw, x, 0, w - s_arrowpx, bh, lrpad / 2, m->sel->name, 0);
+#endif
+
             if (m->sel->isfloating) {
                 drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
             }
+            drw_setscheme(drw, scheme[ArrowNorm]);
+            drw_arrow(drw, x, 0, arrowpx, bh, 1, USE_SLASH_STATUS);
         } else {
             drw_setscheme(drw, scheme[SchemeInfoNorm]);
             drw_rect(drw, x, 0, w, bh, 1, 1);
@@ -1259,6 +1281,12 @@ void killclient(const Arg *arg) {
         XSetErrorHandler(xerror);
         XUngrabServer(dpy);
     }
+}
+
+void makeDynamicScheme(Clr fg, Clr bg, Clr border) {
+    scheme[DynamicScheme][0] = fg;
+    scheme[DynamicScheme][1] = bg;
+    scheme[DynamicScheme][2] = border;
 }
 
 void manage(Window w, XWindowAttributes *wa) {

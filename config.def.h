@@ -3,6 +3,11 @@
 #include <X11/X.h>
 #include <X11/XF86keysym.h>
 
+#define CENTER_WINDOW_NAME
+
+#define USE_SLASH_TAGS 1
+#define USE_SLASH_STATUS 1
+
 /* appearance */
 static const unsigned int arrowpx = 12;       /* arrow size in px */
 static const unsigned int s_arrowpx = 12;       /* arrow size in px */
@@ -13,7 +18,7 @@ static const unsigned int cornerrad = 0;    /* corner radius */
 static const unsigned int snap = 32;       /* snap pixel */
 static const int showbar = 1;        /* 0 means no bar */
 static const int topbar = 1;        /* 0 means bottom bar */
-static const char *fonts[] = {"monospace:size=11", "FontAwesome:size=12"};
+static const char *fonts[] = {"monospace:size=11", "FontAwesome:size=10"};
 static const char dmenufont[] = "monospace:size=12";
 static const char col_bg_n[] = "#1F2937"; /* tailwind gray 800 */
 static const char col_bg_s[] = "#3f51b5"; /* indigo 500 */
@@ -40,7 +45,7 @@ static const char *colors[][3] = {
         [ArrowActive]    = {col_active, col_bg_n, col_wb_s},
         [ArrowActiveAlt]    = {col_bg_n, col_active, col_wb_s},
         [ArrowFullActive]    = {col_active, col_active, col_wb_s},
-//        [DynamicScheme]            = {col_bg_n, col_bg_s, col_wb_s},
+        [DynamicScheme]            = {col_bg_n, col_bg_s, col_wb_s},
 };
 
 /* bar height */
